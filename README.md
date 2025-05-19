@@ -123,5 +123,4 @@ git push origin main
 ### 👨‍💼 Author
 
 
-Maintained by Lucas Inocencio
-Originally created by Vitor Fornaro
+Maintained by Lucas Inocencio // Originally created by Vitor Fornaro
