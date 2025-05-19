@@ -6,6 +6,7 @@ This project automates the extraction of structured financial data from encrypte
 
 ## 📁 Project Structure
 
+```bash
 Senna-Project/
 │
 ├── src/
@@ -22,9 +23,9 @@ Senna-Project/
 │   ├── encrypted/                # Encrypted input PDFs
 │   ├── decrypted/                # Decrypted PDFs
 │   ├── decrypted/processed/     # Decrypted PDFs already processed
-│   ├── outputs/
-│   │   ├── csv/resultado_extracao.csv
-│   │   ├── json/resultado_extracao.json
+│   └── outputs/
+│       ├── csv/resultado_extracao.csv
+│       └── json/resultado_extracao.json
 │
 ├── customers/                   # JSON exports split by NIF (one file per client)
 ├── logs/
@@ -32,8 +33,7 @@ Senna-Project/
 ├── requirements.txt             # Python dependencies
 ├── Dockerfile                   # Docker setup file
 ├── README.md                    # Project documentation
-
----
+```
 
 ## 🎯 Features
 
@@ -122,7 +122,6 @@ git push origin main
 
 ### 👨‍💼 Author
 
-👨‍💼 Author
 
 Maintained by Lucas Inocencio
 Originally created by Vitor Fornaro
