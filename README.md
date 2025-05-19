@@ -1,4 +1,6 @@
-# 🇵🇹 Senna-Project - Mapa de Responsabilidades Extractor
+# 🇵🇹 Senna Project
+
+Mapa de Responsabilidades Extractor
 
 This project automates the extraction of structured financial data from encrypted *Mapas de Responsabilidades* PDFs in Portugal. It uses regular expressions, PDF parsing, and business rules to classify and export client profiles.
 
