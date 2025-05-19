@@ -1,5 +1,12 @@
 import re
+import os
+from datetime import datetime
 import pandas as pd
+
+# Pasta e arquivo de log
+LOG_FOLDER = "./logs"
+os.makedirs(LOG_FOLDER, exist_ok=True)
+LOG_FILE = os.path.join(LOG_FOLDER, "erros_processamento.txt")
 
 class PDFDataExtractor:
     def __init__(self):
@@ -21,42 +28,51 @@ class PDFDataExtractor:
         }
 
     def get_feature(self, text, regex_key):
-        if regex_key == 'garantias':
-            match = self.regexes[regex_key].search(text)
-            if match:
-                valor = match.group(1).strip()
-                if valor == '-' or not valor:
-                    return '0'
-                return valor
-            elif "Garantias" in text:
-                if re.search(r"Tipo\s+Valor\s+Número\s*\n\s*-+\s+-+\s+-+", text):
-                    return '0'
-            return None
-        else:
-            match = self.regexes[regex_key].search(text)
-            return match.group(1).strip() if match else None
+        try:
+            if regex_key == 'garantias':
+                match = self.regexes[regex_key].search(text)
+                if match:
+                    valor = match.group(1).strip()
+                    if valor == '-' or not valor:
+                        return '0'
+                    return valor
+                elif "Garantias" in text:
+                    if re.search(r"Tipo\s+Valor\s+Número\s*\n\s*-+\s+-+\s+-+", text):
+                        return '0'
+                return None
+            else:
+                match = self.regexes[regex_key].search(text)
+                return match.group(1).strip() if match else None
+        except Exception as e:
+            raise ValueError(f"Erro ao extrair '{regex_key}': {str(e)}")
 
     def extract_data(self, pdf_pages_dict):
         data = []
         for pdf_name, pages in pdf_pages_dict.items():
             for page_number, page_text in pages.items():
-                row = {
-                    'arquivo_pdf': pdf_name,
-                    'pagina_pdf': page_number,
-                    'nome': self.get_feature(page_text, 'nome'),
-                    'nif': self.get_feature(page_text, 'nif'),
-                    'mes_mapa': self.get_feature(page_text, 'mes_mapa'),
-                    'ano_mapa': self.get_feature(page_text, 'ano_mapa'),
-                    'instituicao': self.get_feature(page_text, 'instituicao'),
-                    'divida': self.get_feature(page_text, 'total_em_divida'),
-                    'litigio': self.get_feature(page_text, 'litigio'),
-                    'parcela': self.get_feature(page_text, 'abatido_ativo'),
-                    'garantias': self.get_feature(page_text, 'garantias'),
-                    'num_devedores': self.get_feature(page_text, 'num_devedores'),
-                    'prod_financeiro': self.get_feature(page_text, 'prod_financeiro'),
-                    'entrada_incumpr': self.get_feature(page_text, 'entrada_incumpr'),
-                    'dat_inicio': self.get_feature(page_text, 'dat_inicio'),
-                    'dat_fim': self.get_feature(page_text, 'dat_fim')
-                }
-                data.append(row)
+                try:
+                    row = {
+                        'arquivo_pdf': pdf_name,
+                        'pagina_pdf': page_number,
+                        'nome': self.get_feature(page_text, 'nome'),
+                        'nif': self.get_feature(page_text, 'nif'),
+                        'mes_mapa': self.get_feature(page_text, 'mes_mapa'),
+                        'ano_mapa': self.get_feature(page_text, 'ano_mapa'),
+                        'instituicao': self.get_feature(page_text, 'instituicao'),
+                        'divida': self.get_feature(page_text, 'total_em_divida'),
+                        'litigio': self.get_feature(page_text, 'litigio'),
+                        'parcela': self.get_feature(page_text, 'abatido_ativo'),
+                        'garantias': self.get_feature(page_text, 'garantias'),
+                        'num_devedores': self.get_feature(page_text, 'num_devedores'),
+                        'prod_financeiro': self.get_feature(page_text, 'prod_financeiro'),
+                        'entrada_incumpr': self.get_feature(page_text, 'entrada_incumpr'),
+                        'dat_inicio': self.get_feature(page_text, 'dat_inicio'),
+                        'dat_fim': self.get_feature(page_text, 'dat_fim')
+                    }
+                    data.append(row)
+                except Exception as e:
+                    log_msg = f"[{datetime.now().isoformat()}] Erro ao processar página {page_number} do '{pdf_name}': {str(e)}\n"
+                    print(log_msg.strip())
+                    with open(LOG_FILE, "a", encoding="utf-8") as f:
+                        f.write(log_msg)
         return pd.DataFrame(data)
