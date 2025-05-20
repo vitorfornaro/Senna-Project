@@ -23,24 +23,30 @@ class PDFDecryptor:
 
         for index, pdf_file in enumerate(pdf_files, start=1):
             encrypted_pdf_path = os.path.join(self.source_folder, pdf_file)
-            decrypted_pdf_path = os.path.join(self.target_folder, f"decrypted_{pdf_file}")
+
+            # Remove todos os "decrypted_" do nome original
+            file_name_clean = pdf_file
+            while file_name_clean.startswith("decrypted_"):
+                file_name_clean = file_name_clean[len("decrypted_"):]
+
+            decrypted_pdf_path = os.path.join(self.target_folder, f"decrypted_{file_name_clean}")
 
             try:
                 print(f"Processando {index} de {total_files} PDFs...")
                 with pikepdf.open(encrypted_pdf_path) as pdf:
                     pdf.save(decrypted_pdf_path)
-                print(f"PDF desbloqueado com sucesso! Salvo em: {decrypted_pdf_path}")
+                print(f"✅ PDF desbloqueado com sucesso! Salvo em: {decrypted_pdf_path}")
 
                 # Move o PDF original para a pasta processed
                 shutil.move(encrypted_pdf_path, os.path.join(self.processed_folder, pdf_file))
-                print(f"PDF original criptografado movido para: {self.processed_folder}")
+                print(f"📁 PDF original criptografado movido para: {self.processed_folder}")
 
                 decrypted_files.append(decrypted_pdf_path)
             except pikepdf.PasswordError:
-                print(f"O PDF '{pdf_file}' está protegido por senha e não pode ser desbloqueado.")
+                print(f"🔒 O PDF '{pdf_file}' está protegido por senha e não pode ser desbloqueado.")
             except FileNotFoundError as e:
-                print(f"Erro: Arquivo não encontrado. {e}")
+                print(f"❌ Erro: Arquivo não encontrado. {e}")
             except Exception as e:
-                print(f"Ocorreu um erro ao descriptografar: {e}")
+                print(f"⚠️ Ocorreu um erro ao descriptografar: {e}")
 
         return decrypted_files
