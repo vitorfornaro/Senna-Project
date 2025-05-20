@@ -47,13 +47,20 @@ class PDFOutputHandler:
 
     def save_json_by_client(self, dataframe):
         """Salva um arquivo JSON separado por NIF (cliente)."""
+        if dataframe.empty:
+            print("⚠️ Nenhum dado válido para salvar por cliente.")
+            return
+
         df_validos = dataframe[dataframe['nif'].notna()]
         clientes_salvos = 0
 
         for nif, group in df_validos.groupby("nif"):
             json_path = os.path.join(self.client_json_folder, f"{nif}.json")
-            with open(json_path, "w", encoding="utf-8") as f:
-                json.dump(group.to_dict(orient="records"), f, ensure_ascii=False, indent=2)
-            clientes_salvos += 1
+            try:
+                with open(json_path, "w", encoding="utf-8") as f:
+                    json.dump(group.to_dict(orient="records"), f, ensure_ascii=False, indent=2)
+                clientes_salvos += 1
+            except Exception as e:
+                print(f"❌ Erro ao salvar JSON para NIF {nif}: {e}")
 
-        print(f"✅ {clientes_salvos} arquivos JSON salvos individualmente na pasta: {self.client_json_folder}")
+        print(f"\n✅ {clientes_salvos} arquivos JSON salvos individualmente na pasta: {self.client_json_folder}")
