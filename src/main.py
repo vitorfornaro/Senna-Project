@@ -3,6 +3,7 @@ from pdf_decryptor import PDFDecryptor
 from pdf_text_extractor import PDFTextExtractor
 from pdf_data_extractor import PDFDataExtractor
 from pdf_output_handler import PDFOutputHandler
+from senninha import Senninha  # ✅ Novo nome
 
 def process_pdfs():
     print("🚀 Iniciando processamento dos PDFs...")
@@ -29,6 +30,9 @@ def process_pdfs():
         return
 
     print(f"📊 Total de registros extraídos: {len(df)}")
+
+    # ✅ Aplicar perfilamento com Senninha
+    df = Senninha.aplicar(df)
 
     # Substituir NaN/NaT por None para JSON
     df = df.where(pd.notnull(df), None)
