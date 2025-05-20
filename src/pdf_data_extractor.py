@@ -14,7 +14,6 @@ class PDFDataExtractor:
             'nif': re.compile(r'Nº de Identificação:\s+(\d+)'),
             'mes_mapa': re.compile(r'Responsabilidades de crédito referentes a\s+(.+)', re.MULTILINE),
             'ano_mapa': re.compile(r'\b(19|20|21)\d{2}\b'),
-            # Captura blocos por instituição (com o prefixo incluído)
             'bloco_instituicao': re.compile(r'(Informação comunicada pela instituição:.*?)(?=Informação comunicada pela instituição:|$)', re.DOTALL)
         }
 
@@ -78,13 +77,17 @@ class PDFDataExtractor:
 
                             for key, regex in self.item_regexes.items():
                                 if key == 'instituicao':
-                                    continue  # já tratamos acima
+                                    continue  # já tratado acima
+
                                 match = regex.search(sub_bloco)
                                 valor = match.group(1).strip() if match else None
                                 if valor:
                                     valor = valor.replace("\xa0", "").replace(" ", "")
-                                if key == 'garantias' and (valor in ('-', '', None)):
+
+                                # Tratamento de garantias e parcela com valor "-"
+                                if key in ['garantias', 'parcela'] and valor in ('-', '', None):
                                     valor = '0'
+
                                 row[key] = valor
 
                             data.append(row)
