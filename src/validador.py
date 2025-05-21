@@ -1,38 +1,60 @@
 import os
 import json
+from config import Config
 
-def salvar_nao_perfilar(df, pasta_destino="maps/no_perfila/"):
-    os.makedirs(pasta_destino, exist_ok=True)
+# ✅ Pastas de saída
+CUSTOMER_DIR = os.path.join(Config.MAPS_DIR, "customers")
+NO_PERFILA_DIR = os.path.join(Config.MAPS_DIR, "no_perfila")
 
-    # Filtrar apenas os que não perfilam
-    df_nao_perfilar = df[df["perfila"] == False]
+os.makedirs(CUSTOMER_DIR, exist_ok=True)
+os.makedirs(NO_PERFILA_DIR, exist_ok=True)
 
-    # Agrupar por NIF
-    for nif, grupo in df_nao_perfilar.groupby("nif"):
-        dividas = grupo.to_dict(orient="records")
-        motivo = []
+def salvar_nao_perfilar(df):
+    df_nao_perfila = df[df["perfila"] == False]
 
-        for linha in dividas:
-            razoes = []
-            if not (linha["litigio"] or "").strip().lower() == "não":
-                razoes.append("litigio != 'Não'")
-            if linha["garantias"] and linha["garantias"] > 0:
-                razoes.append("garantia > 0")
-            if not razoes:
-                razoes.append("reprovado por regra da instituição")
+    if df_nao_perfila.empty:
+        print("✅ Nenhum cliente reprovado. Nada a salvar.")
+        return
 
-            linha["motivo_nao_perfilar"] = ", ".join(razoes)
+    for nif, grupo in df_nao_perfila.groupby("nif"):
+        dividas_com_motivos = []
 
-        # Estrutura final
-        output = {
+        for _, row in grupo.iterrows():
+            motivos = []
+
+            if str(row["litigio"]).strip().lower() == "sim":
+                motivos.append("Litígio judicial")
+
+            if float(row.get("garantias") or 0) > 0:
+                motivos.append("Dívida com garantia")
+
+            outras = grupo[(grupo["instituicao"] == row["instituicao"]) & (
+                (grupo["litigio"].astype(str).str.strip().str.lower() == "sim") |
+                (grupo["garantias"].fillna(0).astype(float) > 0)
+            )]
+            if not outras.empty:
+                motivos.append("Instituição tem outra dívida com garantia/litigio")
+
+            dividas_com_motivos.append({
+                "instituicao": row["instituicao"],
+                "valor": row["divida"],
+                "motivos_reprovacao": list(set(motivos)) or ["Regras de perfilamento não atendidas"]
+            })
+
+        resumo = {
             "nif": nif,
-            "motivo_resumo": f"{len(dividas)} dividas não perfiladas",
-            "dividas": dividas
+            "divida_total_elegivel": grupo["divida"].sum(),
+            "perfila": False
         }
 
-        # Caminho do JSON
-        file_path = os.path.join(pasta_destino, f"{nif}.json")
-        with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(output, f, ensure_ascii=False, indent=2)
+        estrutura = {
+            "resumo": resumo,
+            "motivos": dividas_com_motivos
+        }
 
-        print(f"📁 Reprovado salvo em: {file_path}")
+        # ✅ Salvar na pasta exclusiva "no_perfila"
+        caminho = os.path.join(NO_PERFILA_DIR, f"{nif}.json")
+        with open(caminho, "w", encoding="utf-8") as f:
+            json.dump(estrutura, f, ensure_ascii=False, indent=2)
+
+        print(f"💾 JSON de não perfilamento salvo em: {caminho}")
