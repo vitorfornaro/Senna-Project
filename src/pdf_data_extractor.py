@@ -36,7 +36,6 @@ class PDFDataExtractor:
 
     def extract_data(self, pdf_pages_dict):
         data = []
-
         for pdf_name, pages in pdf_pages_dict.items():
             for page_number, page_text in sorted(pages.items()):
                 try:
@@ -46,10 +45,10 @@ class PDFDataExtractor:
                     ano_mapa = self.get_header_info(page_text, 'ano_mapa')
 
                     blocos_instituicao = self.regexes['bloco_instituicao'].findall(page_text)
-                    print(f"📄 Página {page_number} de '{pdf_name}' contém {len(blocos_instituicao)} blocos de instituição detectados.")
+                    print(f"📄 Página texto_pagina{page_number} de '{pdf_name}' contém {len(blocos_instituicao)} blocos de instituição detectados.")
 
-                    for i, bloco in enumerate(blocos_instituicao, 1):
-                        bloco = bloco.replace('\xa0', ' ')  # limpeza de espaços invisíveis
+                    for bloco in blocos_instituicao:
+                        bloco = bloco.replace('\xa0', ' ')
                         linhas = bloco.strip().splitlines()
                         nome_inst = "NÃO IDENTIFICADA"
 
@@ -57,7 +56,7 @@ class PDFDataExtractor:
                             match_inst = re.match(r"Informação comunicada pela instituição:\s+(.+)", linhas[0])
                             if match_inst:
                                 nome_inst = match_inst.group(1).strip()
-                                bloco = "\n".join(linhas[1:])  # remove a linha da instituição do bloco
+                                bloco = "\n".join(linhas[1:])
 
                         sub_blocos = re.findall(r"(Montantes.*?Produto financeiro.+?)(?=Montantes|$)", bloco, re.DOTALL)
                         if not sub_blocos:
@@ -77,23 +76,19 @@ class PDFDataExtractor:
 
                             for key, regex in self.item_regexes.items():
                                 if key == 'instituicao':
-                                    continue  # já tratado acima
-
+                                    continue
                                 match = regex.search(sub_bloco)
                                 valor = match.group(1).strip() if match else None
                                 if valor:
                                     valor = valor.replace("\xa0", "").replace(" ", "")
-
-                                # Tratamento de garantias e parcela com valor "-"
-                                if key in ['garantias', 'parcela'] and valor in ('-', '', None):
+                                if key in ['garantias', 'parcela'] and (valor in ('-', '', None)):
                                     valor = '0'
-
                                 row[key] = valor
 
                             data.append(row)
 
                 except Exception as e:
-                    log_msg = f"[{datetime.now().isoformat()}] Erro ao processar página {page_number} do '{pdf_name}': {str(e)}\n"
+                    log_msg = f"[{datetime.now().isoformat()}] Erro na página {page_number} do '{pdf_name}': {str(e)}\n"
                     print(log_msg.strip())
                     with open(LOG_FILE, "a", encoding="utf-8") as f:
                         f.write(log_msg)
