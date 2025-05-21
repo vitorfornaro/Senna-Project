@@ -4,6 +4,7 @@ from pdf_text_extractor import PDFTextExtractor
 from pdf_data_extractor import PDFDataExtractor
 from pdf_output_handler import PDFOutputHandler
 from senninha import Senninha  # ✅ responsável pelo perfilamento
+from validador import validar_perfilamento  # ✅ novo validador
 
 def process_pdfs():
     print("🚀 Iniciando processamento dos PDFs...")
@@ -33,6 +34,9 @@ def process_pdfs():
 
     # ✅ Aplicar regras de perfilamento
     df = Senninha.aplicar(df)
+
+    # ✅ Validar e explicar resultado
+    validar_perfilamento(df, verbose=True)
 
     # ✅ Salvar JSON por cliente com resumo
     Senninha.exportar_json_com_resumo(df)
