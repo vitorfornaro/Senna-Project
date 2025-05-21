@@ -1,0 +1,48 @@
+{
+  "nif": "149765312",
+  "motivo_resumo": "2 dividas não perfiladas",
+  "dividas": [
+    {
+      "arquivo_pdf": "0be3025b-74b8-429e-b5a7-55f8c5e47461.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina1",
+      "nome": "ANTONIO MANUEL COTRIM DA SILVA",
+      "nif": "149765312",
+      "mes_mapa": "fevereiro de 2025",
+      "ano_mapa": "20",
+      "instituicao": "321CRÉDITO, INSTITUIÇÃO FINANCEIRA DE CRÉDITO S.A. (0305)",
+      "divida": 4880.98,
+      "litigio": "Não",
+      "parcela": 0.0,
+      "garantias": 77.07,
+      "num_devedores": "2",
+      "prod_financeiro": "Créditoautomóvel(excluíndolocaçõesfinanceiras)",
+      "dat_inicio": "2001-02-22",
+      "dat_fim": "2004-02-15",
+      "entrada_incumpr": "2004-01-15",
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    },
+    {
+      "arquivo_pdf": "0be3025b-74b8-429e-b5a7-55f8c5e47461 - cópia.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina1",
+      "nome": "ANTONIO MANUEL COTRIM DA SILVA",
+      "nif": "149765312",
+      "mes_mapa": "fevereiro de 2025",
+      "ano_mapa": "20",
+      "instituicao": "321CRÉDITO, INSTITUIÇÃO FINANCEIRA DE CRÉDITO S.A. (0305)",
+      "divida": 4880.98,
+      "litigio": "Não",
+      "parcela": 0.0,
+      "garantias": 77.07,
+      "num_devedores": "2",
+      "prod_financeiro": "Créditoautomóvel(excluíndolocaçõesfinanceiras)",
+      "dat_inicio": "2001-02-22",
+      "dat_fim": "2004-02-15",
+      "entrada_incumpr": "2004-01-15",
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    }
+  ]
+}

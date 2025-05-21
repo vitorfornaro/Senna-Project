@@ -1,0 +1,48 @@
+{
+  "nif": "251735826",
+  "motivo_resumo": "2 dividas não perfiladas",
+  "dividas": [
+    {
+      "arquivo_pdf": "0ff3205e-331d-494b-b476-93c24dd7808e - cópia.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina1",
+      "nome": "VLADIMIR CHIPERI",
+      "nif": "251735826",
+      "mes_mapa": "fevereiro de 2025",
+      "ano_mapa": "20",
+      "instituicao": "BANCO SANTANDER TOTTA, S.A. (0018)",
+      "divida": 78052.06,
+      "litigio": "Não",
+      "parcela": 446.27,
+      "garantias": 98400.0,
+      "num_devedores": "1",
+      "prod_financeiro": "Créditoàhabitação",
+      "dat_inicio": "2017-09-27",
+      "dat_fim": "2063-04-02",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    },
+    {
+      "arquivo_pdf": "0ff3205e-331d-494b-b476-93c24dd7808e.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina1",
+      "nome": "VLADIMIR CHIPERI",
+      "nif": "251735826",
+      "mes_mapa": "fevereiro de 2025",
+      "ano_mapa": "20",
+      "instituicao": "BANCO SANTANDER TOTTA, S.A. (0018)",
+      "divida": 78052.06,
+      "litigio": "Não",
+      "parcela": 446.27,
+      "garantias": 98400.0,
+      "num_devedores": "1",
+      "prod_financeiro": "Créditoàhabitação",
+      "dat_inicio": "2017-09-27",
+      "dat_fim": "2063-04-02",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    }
+  ]
+}

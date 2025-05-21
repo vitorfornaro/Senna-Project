@@ -1,0 +1,48 @@
+{
+  "nif": "249678489",
+  "motivo_resumo": "2 dividas não perfiladas",
+  "dividas": [
+    {
+      "arquivo_pdf": "0e053b69-98af-4140-a84d-01c49f367069_9F29FA3BE19BA8B0.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina1",
+      "nome": "IRIS CRISTIANA ALMEIDA MARTINS",
+      "nif": "249678489",
+      "mes_mapa": "maio de 2024",
+      "ano_mapa": "20",
+      "instituicao": "BANCO PRIMUS, SA (0246)",
+      "divida": 7478.39,
+      "litigio": "Não",
+      "parcela": 217.37,
+      "garantias": 8700.0,
+      "num_devedores": "1",
+      "prod_financeiro": "Créditoautomóvel(excluíndolocaçõesfinanceiras)",
+      "dat_inicio": "2022-01-25",
+      "dat_fim": "2028-02-20",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    },
+    {
+      "arquivo_pdf": "0e053b69-98af-4140-a84d-01c49f367069_9F29FA3BE19BA8B0 - cópia.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina1",
+      "nome": "IRIS CRISTIANA ALMEIDA MARTINS",
+      "nif": "249678489",
+      "mes_mapa": "maio de 2024",
+      "ano_mapa": "20",
+      "instituicao": "BANCO PRIMUS, SA (0246)",
+      "divida": 7478.39,
+      "litigio": "Não",
+      "parcela": 217.37,
+      "garantias": 8700.0,
+      "num_devedores": "1",
+      "prod_financeiro": "Créditoautomóvel(excluíndolocaçõesfinanceiras)",
+      "dat_inicio": "2022-01-25",
+      "dat_fim": "2028-02-20",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    }
+  ]
+}

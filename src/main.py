@@ -3,8 +3,8 @@ from pdf_decryptor import PDFDecryptor
 from pdf_text_extractor import PDFTextExtractor
 from pdf_data_extractor import PDFDataExtractor
 from pdf_output_handler import PDFOutputHandler
-from senninha import Senninha  # ✅ responsável pelo perfilamento
-from validador import validar_perfilamento  # ✅ novo validador
+from senninha import Senninha
+from validador import salvar_nao_perfilar  # ✅ novo: salvar reprovados com motivo
 
 def process_pdfs():
     print("🚀 Iniciando processamento dos PDFs...")
@@ -35,11 +35,11 @@ def process_pdfs():
     # ✅ Aplicar regras de perfilamento
     df = Senninha.aplicar(df)
 
-    # ✅ Validar e explicar resultado
-    validar_perfilamento(df, verbose=True)
-
-    # ✅ Salvar JSON por cliente com resumo
+    # ✅ Exportar JSON com resumo
     Senninha.exportar_json_com_resumo(df)
+
+    # ✅ Exportar os reprovados com motivos
+    salvar_nao_perfilar(df)
 
     # Substituir NaN/NaT por None para exportação
     df = df.where(pd.notnull(df), None)

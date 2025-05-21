@@ -1,44 +1,38 @@
-# src/validador.py
+import os
+import json
 
-import pandas as pd
+def salvar_nao_perfilar(df, pasta_destino="maps/no_perfila/"):
+    os.makedirs(pasta_destino, exist_ok=True)
 
-def validar_perfilamento(df: pd.DataFrame, verbose: bool = True):
-    """
-    Valida o perfilamento com explicações detalhadas por NIF e instituição.
-    """
+    # Filtrar apenas os que não perfilam
+    df_nao_perfilar = df[df["perfila"] == False]
 
-    print("\n🧠 Iniciando validação dos resultados de perfilamento...\n")
+    # Agrupar por NIF
+    for nif, grupo in df_nao_perfilar.groupby("nif"):
+        dividas = grupo.to_dict(orient="records")
+        motivo = []
 
-    nifs = df['nif'].dropna().unique()
+        for linha in dividas:
+            razoes = []
+            if not (linha["litigio"] or "").strip().lower() == "não":
+                razoes.append("litigio != 'Não'")
+            if linha["garantias"] and linha["garantias"] > 0:
+                razoes.append("garantia > 0")
+            if not razoes:
+                razoes.append("reprovado por regra da instituição")
 
-    for nif in nifs:
-        print(f"\n📌 NIF: {nif}")
+            linha["motivo_nao_perfilar"] = ", ".join(razoes)
 
-        df_nif = df[df['nif'] == nif].copy()
-        df_perfiladas = df_nif[df_nif['perfil_individual'] == True]
-        total_elegivel = df_perfiladas['divida'].sum()
-        grupo_perfila = total_elegivel >= 6000
+        # Estrutura final
+        output = {
+            "nif": nif,
+            "motivo_resumo": f"{len(dividas)} dividas não perfiladas",
+            "dividas": dividas
+        }
 
-        print(f"💰 Total de dívidas elegíveis: € {total_elegivel:,.2f}")
-        print(f"✅ PERFILA? {'Sim' if grupo_perfila else 'Não'}")
+        # Caminho do JSON
+        file_path = os.path.join(pasta_destino, f"{nif}.json")
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(output, f, ensure_ascii=False, indent=2)
 
-        if verbose:
-            print("\n🔎 Analisando dívidas...")
-
-            for _, row in df_nif.iterrows():
-                motivos = []
-
-                if not isinstance(row['litigio'], str) or row['litigio'].strip().lower() != 'não':
-                    motivos.append("⚠️ Litígio presente")
-
-                if row['garantias'] is not None and row['garantias'] > 0:
-                    motivos.append("⚠️ Possui garantia")
-
-                if not motivos:
-                    motivos.append("✅ Dívida elegível")
-
-                print(f"\n📄 Instituição: {row['instituicao']}")
-                print(f"   → Valor: € {row['divida']}")
-                print(f"   → Perfilou? {'Sim' if row['perfil_individual'] else 'Não'}")
-                for motivo in motivos:
-                    print(f"      - {motivo}")
+        print(f"📁 Reprovado salvo em: {file_path}")

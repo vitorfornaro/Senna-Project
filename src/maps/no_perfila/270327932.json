@@ -1,0 +1,48 @@
+{
+  "nif": "270327932",
+  "motivo_resumo": "2 dividas não perfiladas",
+  "dividas": [
+    {
+      "arquivo_pdf": "1bbf56a2-54ec-48e9-beee-3c0df77d630a_75FDE4F94499FDDB - cópia.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina7",
+      "nome": "POLIANA OLIVEIRA SILVA",
+      "nif": "270327932",
+      "mes_mapa": "setembro de 2021",
+      "ano_mapa": "20",
+      "instituicao": "BANCO CREDIBOM, SA (0916)",
+      "divida": 11983.17,
+      "litigio": "Não",
+      "parcela": 156.06,
+      "garantias": 11000.0,
+      "num_devedores": "2",
+      "prod_financeiro": "Créditoautomóvel(excluíndolocaçõesfinanceiras)",
+      "dat_inicio": "2021-02-24",
+      "dat_fim": "2031-03-05",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    },
+    {
+      "arquivo_pdf": "1bbf56a2-54ec-48e9-beee-3c0df77d630a_75FDE4F94499FDDB.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina7",
+      "nome": "POLIANA OLIVEIRA SILVA",
+      "nif": "270327932",
+      "mes_mapa": "setembro de 2021",
+      "ano_mapa": "20",
+      "instituicao": "BANCO CREDIBOM, SA (0916)",
+      "divida": 11983.17,
+      "litigio": "Não",
+      "parcela": 156.06,
+      "garantias": 11000.0,
+      "num_devedores": "2",
+      "prod_financeiro": "Créditoautomóvel(excluíndolocaçõesfinanceiras)",
+      "dat_inicio": "2021-02-24",
+      "dat_fim": "2031-03-05",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    }
+  ]
+}

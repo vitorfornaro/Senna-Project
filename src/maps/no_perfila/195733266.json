@@ -1,0 +1,48 @@
+{
+  "nif": "195733266",
+  "motivo_resumo": "2 dividas não perfiladas",
+  "dividas": [
+    {
+      "arquivo_pdf": "00fef621-1b68-470a-8df2-636c523c7d0d.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina1",
+      "nome": "FRANCISCO JOSE PALMINHA MARCOS FRANCES",
+      "nif": "195733266",
+      "mes_mapa": "janeiro de 2025",
+      "ano_mapa": "20",
+      "instituicao": "BANCO COMERCIAL PORTUGUÊS, SA (0033)",
+      "divida": 81287.42,
+      "litigio": "Não",
+      "parcela": 539.51,
+      "garantias": 81375.97,
+      "num_devedores": "1",
+      "prod_financeiro": "Créditoàhabitação",
+      "dat_inicio": "2010-08-17",
+      "dat_fim": "2052-03-26",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    },
+    {
+      "arquivo_pdf": "00fef621-1b68-470a-8df2-636c523c7d0d - cópia.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina1",
+      "nome": "FRANCISCO JOSE PALMINHA MARCOS FRANCES",
+      "nif": "195733266",
+      "mes_mapa": "janeiro de 2025",
+      "ano_mapa": "20",
+      "instituicao": "BANCO COMERCIAL PORTUGUÊS, SA (0033)",
+      "divida": 81287.42,
+      "litigio": "Não",
+      "parcela": 539.51,
+      "garantias": 81375.97,
+      "num_devedores": "1",
+      "prod_financeiro": "Créditoàhabitação",
+      "dat_inicio": "2010-08-17",
+      "dat_fim": "2052-03-26",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    }
+  ]
+}

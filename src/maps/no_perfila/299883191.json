@@ -1,0 +1,48 @@
+{
+  "nif": "299883191",
+  "motivo_resumo": "2 dividas não perfiladas",
+  "dividas": [
+    {
+      "arquivo_pdf": "01a3f2af-8311-42e1-9de9-6b91dc0514bc - cópia.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina2",
+      "nome": "MARCELA FERREIRA DE PAULA",
+      "nif": "299883191",
+      "mes_mapa": "janeiro de 2025",
+      "ano_mapa": "20",
+      "instituicao": "321CRÉDITO, INSTITUIÇÃO FINANCEIRA DE CRÉDITO S.A. (0305)",
+      "divida": 6136.61,
+      "litigio": "Não",
+      "parcela": 139.39,
+      "garantias": 898.46,
+      "num_devedores": "2",
+      "prod_financeiro": "Créditoautomóvel(excluíndolocaçõesfinanceiras)",
+      "dat_inicio": "2022-09-09",
+      "dat_fim": "2029-09-15",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    },
+    {
+      "arquivo_pdf": "01a3f2af-8311-42e1-9de9-6b91dc0514bc.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina2",
+      "nome": "MARCELA FERREIRA DE PAULA",
+      "nif": "299883191",
+      "mes_mapa": "janeiro de 2025",
+      "ano_mapa": "20",
+      "instituicao": "321CRÉDITO, INSTITUIÇÃO FINANCEIRA DE CRÉDITO S.A. (0305)",
+      "divida": 6136.61,
+      "litigio": "Não",
+      "parcela": 139.39,
+      "garantias": 898.46,
+      "num_devedores": "2",
+      "prod_financeiro": "Créditoautomóvel(excluíndolocaçõesfinanceiras)",
+      "dat_inicio": "2022-09-09",
+      "dat_fim": "2029-09-15",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    }
+  ]
+}

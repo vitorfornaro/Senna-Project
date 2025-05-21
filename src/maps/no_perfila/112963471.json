@@ -1,0 +1,48 @@
+{
+  "nif": "112963471",
+  "motivo_resumo": "2 dividas não perfiladas",
+  "dividas": [
+    {
+      "arquivo_pdf": "0be80d53-f942-412b-b530-cd9a931ba919_2CFB9248C50B6248.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina7",
+      "nome": "LAURA GUILHERMINA ALVES VIEIRA CONSTANTINO",
+      "nif": "112963471",
+      "mes_mapa": "maio de 2024",
+      "ano_mapa": "20",
+      "instituicao": "Hefesto - Sociedade de Titularização de Créditos, SA (8173)",
+      "divida": 10049.86,
+      "litigio": "Sim",
+      "parcela": 50.0,
+      "garantias": 0.0,
+      "num_devedores": "2",
+      "prod_financeiro": "Créditopessoal",
+      "dat_inicio": "2007-06-12",
+      "dat_fim": "9999-12-31",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "litigio != 'Não'"
+    },
+    {
+      "arquivo_pdf": "0be80d53-f942-412b-b530-cd9a931ba919_2CFB9248C50B6248 - cópia.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina7",
+      "nome": "LAURA GUILHERMINA ALVES VIEIRA CONSTANTINO",
+      "nif": "112963471",
+      "mes_mapa": "maio de 2024",
+      "ano_mapa": "20",
+      "instituicao": "Hefesto - Sociedade de Titularização de Créditos, SA (8173)",
+      "divida": 10049.86,
+      "litigio": "Sim",
+      "parcela": 50.0,
+      "garantias": 0.0,
+      "num_devedores": "2",
+      "prod_financeiro": "Créditopessoal",
+      "dat_inicio": "2007-06-12",
+      "dat_fim": "9999-12-31",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "litigio != 'Não'"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "nif": "197874975",
+  "motivo_resumo": "2 dividas não perfiladas",
+  "dividas": [
+    {
+      "arquivo_pdf": "0b8d9117-101a-4b6d-a4e8-13e07ab5188a_F4FEBCCE56B9B8F7.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina3",
+      "nome": "ALBERTINA BASTOS DA SILVA SANTOS",
+      "nif": "197874975",
+      "mes_mapa": "dezembro de 2024",
+      "ano_mapa": "20",
+      "instituicao": "BANCO CREDIBOM, SA (0916)",
+      "divida": 16464.88,
+      "litigio": "Não",
+      "parcela": 222.03,
+      "garantias": 14200.0,
+      "num_devedores": "1",
+      "prod_financeiro": "Créditoautomóvel(excluíndolocaçõesfinanceiras)",
+      "dat_inicio": "2023-04-17",
+      "dat_fim": "2033-07-23",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    },
+    {
+      "arquivo_pdf": "0b8d9117-101a-4b6d-a4e8-13e07ab5188a_F4FEBCCE56B9B8F7 - cópia.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina3",
+      "nome": "ALBERTINA BASTOS DA SILVA SANTOS",
+      "nif": "197874975",
+      "mes_mapa": "dezembro de 2024",
+      "ano_mapa": "20",
+      "instituicao": "BANCO CREDIBOM, SA (0916)",
+      "divida": 16464.88,
+      "litigio": "Não",
+      "parcela": 222.03,
+      "garantias": 14200.0,
+      "num_devedores": "1",
+      "prod_financeiro": "Créditoautomóvel(excluíndolocaçõesfinanceiras)",
+      "dat_inicio": "2023-04-17",
+      "dat_fim": "2033-07-23",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    }
+  ]
+}

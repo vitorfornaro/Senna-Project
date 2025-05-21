@@ -1,0 +1,48 @@
+{
+  "nif": "169973468",
+  "motivo_resumo": "2 dividas não perfiladas",
+  "dividas": [
+    {
+      "arquivo_pdf": "5b2ce39d-683f-4808-b19e-1600d2efac05.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina2",
+      "nome": "ANGELA DA LUZ SOUSA",
+      "nif": "169973468",
+      "mes_mapa": "dezembro de 2024",
+      "ano_mapa": "20",
+      "instituicao": "Hefesto - Sociedade de Titularização de Créditos, SA (8173)",
+      "divida": 1654.83,
+      "litigio": "Sim",
+      "parcela": 0.0,
+      "garantias": 0.0,
+      "num_devedores": "1",
+      "prod_financeiro": "Cartãodecrédito",
+      "dat_inicio": "2011-05-19",
+      "dat_fim": "9999-12-31",
+      "entrada_incumpr": "2011-05-18",
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "litigio != 'Não'"
+    },
+    {
+      "arquivo_pdf": "5b2ce39d-683f-4808-b19e-1600d2efac05 - cópia.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina2",
+      "nome": "ANGELA DA LUZ SOUSA",
+      "nif": "169973468",
+      "mes_mapa": "dezembro de 2024",
+      "ano_mapa": "20",
+      "instituicao": "Hefesto - Sociedade de Titularização de Créditos, SA (8173)",
+      "divida": 1654.83,
+      "litigio": "Sim",
+      "parcela": 0.0,
+      "garantias": 0.0,
+      "num_devedores": "1",
+      "prod_financeiro": "Cartãodecrédito",
+      "dat_inicio": "2011-05-19",
+      "dat_fim": "9999-12-31",
+      "entrada_incumpr": "2011-05-18",
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "litigio != 'Não'"
+    }
+  ]
+}

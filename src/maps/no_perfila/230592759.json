@@ -1,0 +1,48 @@
+{
+  "nif": "230592759",
+  "motivo_resumo": "2 dividas não perfiladas",
+  "dividas": [
+    {
+      "arquivo_pdf": "4e016cb1-9714-4066-81cb-1378672819de.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina1",
+      "nome": "EMILIA DE JESUS GUERRA GOMES",
+      "nif": "230592759",
+      "mes_mapa": "novembro de 2024",
+      "ano_mapa": "20",
+      "instituicao": "BANCO SANTANDER TOTTA, S.A. (0018)",
+      "divida": 70345.08,
+      "litigio": "Não",
+      "parcela": 369.19,
+      "garantias": 88400.0,
+      "num_devedores": "1",
+      "prod_financeiro": "Créditoàhabitação",
+      "dat_inicio": "2014-10-07",
+      "dat_fim": "2060-05-02",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    },
+    {
+      "arquivo_pdf": "4e016cb1-9714-4066-81cb-1378672819de - cópia.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina1",
+      "nome": "EMILIA DE JESUS GUERRA GOMES",
+      "nif": "230592759",
+      "mes_mapa": "novembro de 2024",
+      "ano_mapa": "20",
+      "instituicao": "BANCO SANTANDER TOTTA, S.A. (0018)",
+      "divida": 70345.08,
+      "litigio": "Não",
+      "parcela": 369.19,
+      "garantias": 88400.0,
+      "num_devedores": "1",
+      "prod_financeiro": "Créditoàhabitação",
+      "dat_inicio": "2014-10-07",
+      "dat_fim": "2060-05-02",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    }
+  ]
+}

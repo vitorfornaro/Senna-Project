@@ -1,0 +1,48 @@
+{
+  "nif": "175333661",
+  "motivo_resumo": "2 dividas não perfiladas",
+  "dividas": [
+    {
+      "arquivo_pdf": "00cf6f21-1072-4b82-909b-2f27dc36e97e - cópia.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina1",
+      "nome": "PAULO RUI DA SILVA DE MATOS DIAS",
+      "nif": "175333661",
+      "mes_mapa": "dezembro de 2024",
+      "ano_mapa": "20",
+      "instituicao": "CAIXA ECONÓMICA MONTEPIO GERAL, CAIXA ECONÓMICA BANCÁRIA, SA",
+      "divida": 0.0,
+      "litigio": "Não",
+      "parcela": 0.0,
+      "garantias": 20000.0,
+      "num_devedores": "1",
+      "prod_financeiro": "Créditoàhabitação",
+      "dat_inicio": "2015-11-06",
+      "dat_fim": "2030-11-06",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    },
+    {
+      "arquivo_pdf": "00cf6f21-1072-4b82-909b-2f27dc36e97e.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina1",
+      "nome": "PAULO RUI DA SILVA DE MATOS DIAS",
+      "nif": "175333661",
+      "mes_mapa": "dezembro de 2024",
+      "ano_mapa": "20",
+      "instituicao": "CAIXA ECONÓMICA MONTEPIO GERAL, CAIXA ECONÓMICA BANCÁRIA, SA",
+      "divida": 0.0,
+      "litigio": "Não",
+      "parcela": 0.0,
+      "garantias": 20000.0,
+      "num_devedores": "1",
+      "prod_financeiro": "Créditoàhabitação",
+      "dat_inicio": "2015-11-06",
+      "dat_fim": "2030-11-06",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    }
+  ]
+}

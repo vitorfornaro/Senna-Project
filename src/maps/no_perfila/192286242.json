@@ -1,0 +1,48 @@
+{
+  "nif": "192286242",
+  "motivo_resumo": "2 dividas não perfiladas",
+  "dividas": [
+    {
+      "arquivo_pdf": "0cba815b-fc24-4f9f-9b56-c8092da67857 - cópia.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina3",
+      "nome": "PAULO DE OLIVEIRA GOMES",
+      "nif": "192286242",
+      "mes_mapa": "dezembro de 2024",
+      "ano_mapa": "20",
+      "instituicao": "MONTEPIO CRÉDITO - INSTITUIÇÃO FINANCEIRA DE CRÉDITO, S.A. (0796)",
+      "divida": 20492.48,
+      "litigio": "Não",
+      "parcela": 246.03,
+      "garantias": 19900.0,
+      "num_devedores": "2",
+      "prod_financeiro": "Créditoautomóvel(excluíndolocaçõesfinanceiras)",
+      "dat_inicio": "2024-06-03",
+      "dat_fim": "2034-06-15",
+      "entrada_incumpr": "2024-12-15",
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    },
+    {
+      "arquivo_pdf": "0cba815b-fc24-4f9f-9b56-c8092da67857.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina3",
+      "nome": "PAULO DE OLIVEIRA GOMES",
+      "nif": "192286242",
+      "mes_mapa": "dezembro de 2024",
+      "ano_mapa": "20",
+      "instituicao": "MONTEPIO CRÉDITO - INSTITUIÇÃO FINANCEIRA DE CRÉDITO, S.A. (0796)",
+      "divida": 20492.48,
+      "litigio": "Não",
+      "parcela": 246.03,
+      "garantias": 19900.0,
+      "num_devedores": "2",
+      "prod_financeiro": "Créditoautomóvel(excluíndolocaçõesfinanceiras)",
+      "dat_inicio": "2024-06-03",
+      "dat_fim": "2034-06-15",
+      "entrada_incumpr": "2024-12-15",
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "nif": "245078770",
+  "motivo_resumo": "2 dividas não perfiladas",
+  "dividas": [
+    {
+      "arquivo_pdf": "0a0f6b95-4b3b-4e35-a8e6-55e332397850 - cópia.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina1",
+      "nome": "BEATRIZ GOMES METZGER DE NAZARE",
+      "nif": "245078770",
+      "mes_mapa": "dezembro de 2024",
+      "ano_mapa": "20",
+      "instituicao": "TOYOTA KREDITBANK GMBH - SUCURSAL EM PORTUGAL (0271)",
+      "divida": 8554.33,
+      "litigio": "Não",
+      "parcela": 145.52,
+      "garantias": 8554.33,
+      "num_devedores": "1",
+      "prod_financeiro": "Créditoautomóvel(excluíndolocaçõesfinanceiras)",
+      "dat_inicio": "2023-04-28",
+      "dat_fim": "2031-05-05",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    },
+    {
+      "arquivo_pdf": "0a0f6b95-4b3b-4e35-a8e6-55e332397850.pdf",
+      "pagina_pdf": "texto_paginatexto_pagina1",
+      "nome": "BEATRIZ GOMES METZGER DE NAZARE",
+      "nif": "245078770",
+      "mes_mapa": "dezembro de 2024",
+      "ano_mapa": "20",
+      "instituicao": "TOYOTA KREDITBANK GMBH - SUCURSAL EM PORTUGAL (0271)",
+      "divida": 8554.33,
+      "litigio": "Não",
+      "parcela": 145.52,
+      "garantias": 8554.33,
+      "num_devedores": "1",
+      "prod_financeiro": "Créditoautomóvel(excluíndolocaçõesfinanceiras)",
+      "dat_inicio": "2023-04-28",
+      "dat_fim": "2031-05-05",
+      "entrada_incumpr": null,
+      "perfil_individual": false,
+      "perfila": false,
+      "motivo_nao_perfilar": "garantia > 0"
+    }
+  ]
+}
