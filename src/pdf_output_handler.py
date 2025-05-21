@@ -46,7 +46,7 @@ class PDFOutputHandler:
             print("⚠️ Nenhum dado a salvar no JSON geral.")
 
     def save_json_by_client(self, dataframe):
-        """Salva um arquivo JSON separado por NIF (cliente)."""
+        """Salva um arquivo JSON separado por NIF com bloco de resumo e lista de dívidas."""
         if dataframe.empty:
             print("⚠️ Nenhum dado válido para salvar por cliente.")
             return
@@ -55,12 +55,27 @@ class PDFOutputHandler:
         clientes_salvos = 0
 
         for nif, group in df_validos.groupby("nif"):
+            dividas = group.to_dict(orient="records")
+
+            # Calcular resumo do perfilamento
+            total_elegivel = sum(item["divida"] for item in dividas if item.get("perfil_individual"))
+            perfila = total_elegivel >= 6000
+
+            json_data = {
+                "resumo": {
+                    "nif": nif,
+                    "divida_total_elegivel": round(total_elegivel, 2),
+                    "perfila": perfila
+                },
+                "dividas": dividas
+            }
+
             json_path = os.path.join(self.client_json_folder, f"{nif}.json")
             try:
                 with open(json_path, "w", encoding="utf-8") as f:
-                    json.dump(group.to_dict(orient="records"), f, ensure_ascii=False, indent=2)
+                    json.dump(json_data, f, ensure_ascii=False, indent=2)
                 clientes_salvos += 1
             except Exception as e:
                 print(f"❌ Erro ao salvar JSON para NIF {nif}: {e}")
 
-        print(f"\n✅ {clientes_salvos} arquivos JSON salvos individualmente na pasta: {self.client_json_folder}")
+        print(f"\n✅ {clientes_salvos} arquivos JSON salvos no novo formato em: {self.client_json_folder}")

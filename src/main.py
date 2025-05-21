@@ -31,8 +31,9 @@ def process_pdfs():
 
     print(f"📊 Total de registros extraídos: {len(df)}")
 
-    # ✅ Aplicar perfilamento com Senninha
+    # ✅ Aplicar perfilamento com Senninha e Resumo
     df = Senninha.aplicar(df)
+    Senninha.exportar_json_com_resumo(df)  # ✅ nova estrutura com resumo
 
     # Substituir NaN/NaT por None para JSON
     df = df.where(pd.notnull(df), None)
