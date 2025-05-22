@@ -12,8 +12,8 @@ class PDFDataExtractor:
         self.regexes = {
             'nome': re.compile(r'Nome:\s+(.+)', re.MULTILINE),
             'nif': re.compile(r'Nº de Identificação:\s+(\d+)'),
-            'mes_mapa': re.compile(r'Responsabilidades de crédito referentes a\s+(.+)', re.MULTILINE),
-            'ano_mapa': re.compile(r'\b(19|20|21)\d{2}\b'),
+            'mesmapa': re.compile(r'Responsabilidades de crédito referentes a\s+(.+)', re.MULTILINE),
+            'anomapa': re.compile(r'\b(19|20|21)\d{2}\b'),
             'bloco_instituicao': re.compile(r'(Informação comunicada pela instituição:.*?)(?=Informação comunicada pela instituição:|$)', re.DOTALL)
         }
 
@@ -23,11 +23,11 @@ class PDFDataExtractor:
             'litigio': re.compile(r'Em litígio judicial\s+(Sim|Não)'),
             'parcela': re.compile(r'Abatido ao ativo\s+([\d\s,.]+) €'),
             'garantias': re.compile(r"Tipo\s+Valor\s+Número\s*\n(?:.*?\n)?([-\d\s,.]+) €"),
-            'num_devedores': re.compile(r"Nº devedores no contrato\s+(\d+)"),
-            'prod_financeiro': re.compile(r"Produto financeiro\s+(.+?)\s+Tipo de responsabilidade"),
-            'dat_inicio': re.compile(r"Início\s+(\d{4}-\d{2}-\d{2})"),
-            'dat_fim': re.compile(r"Fim\s+(\d{4}-\d{2}-\d{2})"),
-            'entrada_incumpr': re.compile(r"Entrada incumpr\.\s+(\d{4}-\d{2}-\d{2})"),
+            'numdevedores': re.compile(r"Nº devedores no contrato\s+(\d+)"),
+            'prodfinanceiro': re.compile(r"Produto financeiro\s+(.+?)\s+Tipo de responsabilidade"),
+            'datinicio': re.compile(r"Início\s+(\d{4}-\d{2}-\d{2})"),
+            'datfim': re.compile(r"Fim\s+(\d{4}-\d{2}-\d{2})"),
+            'entradaincumpr': re.compile(r"Entrada incumpr\.\s+(\d{4}-\d{2}-\d{2})"),
         }
 
     def get_header_info(self, text, key):
@@ -41,8 +41,8 @@ class PDFDataExtractor:
                 try:
                     nome = self.get_header_info(page_text, 'nome')
                     nif = self.get_header_info(page_text, 'nif')
-                    mes_mapa = self.get_header_info(page_text, 'mes_mapa')
-                    ano_mapa = self.get_header_info(page_text, 'ano_mapa')
+                    mesmapa = self.get_header_info(page_text, 'mesmapa')
+                    anomapa = self.get_header_info(page_text, 'anomapa')
 
                     blocos_instituicao = self.regexes['bloco_instituicao'].findall(page_text)
                     print(f"📄 Página texto_pagina{page_number} de '{pdf_name}' contém {len(blocos_instituicao)} blocos de instituição detectados.")
@@ -50,7 +50,7 @@ class PDFDataExtractor:
                     for bloco in blocos_instituicao:
                         bloco = bloco.replace('\xa0', ' ')
                         linhas = bloco.strip().splitlines()
-                        nome_inst = "NÃO IDENTIFICADA"
+                        nome_inst = "nao_identificada"
 
                         if linhas and linhas[0].startswith("Informação comunicada pela instituição:"):
                             match_inst = re.match(r"Informação comunicada pela instituição:\s+(.+)", linhas[0])
@@ -65,13 +65,13 @@ class PDFDataExtractor:
                         for sub_bloco in sub_blocos:
                             sub_bloco = sub_bloco.replace('\xa0', ' ')
                             row = {
-                                'arquivo_pdf': os.path.basename(pdf_name).replace("decrypted_", ""),
-                                'pagina_pdf': f"texto_pagina{page_number}",
-                                'nome': nome,
+                                'arquivopdf': os.path.basename(pdf_name).replace("decrypted_", ""),
+                                'paginapdf': f"texto_pagina{page_number}",
+                                'nome': nome.lower() if nome else None,
                                 'nif': nif,
-                                'mes_mapa': mes_mapa,
-                                'ano_mapa': ano_mapa,
-                                'instituicao': nome_inst
+                                'mesmapa': mesmapa.lower() if mesmapa else None,
+                                'anomapa': anomapa,
+                                'instituicao': nome_inst.lower()
                             }
 
                             for key, regex in self.item_regexes.items():

@@ -9,16 +9,17 @@ class PDFTextExtractor:
         self.input_folder = input_folder
         self.processed_folder = processed_folder
 
-    def extract_text_from_pdfs(self):
-        pdf_files = [f for f in os.listdir(self.input_folder) if f.lower().endswith(".pdf")]
-        if not pdf_files:
-            print("Nenhum PDF encontrado na pasta de entrada.")
+    def extract_text_from_pdfs(self, pdf_paths=None):  # ← aceita lista de PDFs
+        if pdf_paths is None:
+            pdf_paths = [os.path.join(self.input_folder, f) for f in os.listdir(self.input_folder) if f.lower().endswith(".pdf")]
+
+        if not pdf_paths:
+            print("Nenhum PDF encontrado para extração.")
             return {}
 
-        pdfs_text = {}  # Dicionário para armazenar textos de cada PDF
-
-        for file_name in pdf_files:
-            input_pdf_path = os.path.join(self.input_folder, file_name)
+        pdfs_text = {}
+        for input_pdf_path in pdf_paths:
+            file_name = os.path.basename(input_pdf_path)
             processed_pdf_path = os.path.join(self.processed_folder, file_name)
             try:
                 full_text = ""
@@ -28,20 +29,15 @@ class PDFTextExtractor:
                     page_text = page.extract_text() or ""
                     full_text += page_text
 
-                # Dividir o texto baseado no delimitador
                 paginas = re.split(r"------------------ PAGINA \d+ ----------------", full_text)
-                paginas = [pagina.strip() for pagina in paginas if pagina.strip()]
+                paginas = [p.strip() for p in paginas if p.strip()]
 
-                print(f"\nTotal de páginas detectadas em '{file_name}': {len(paginas)}\n")
-
-                # Armazena as páginas deste PDF no dicionário
+                print(f"📄 '{file_name}' tem {len(paginas)} páginas extraídas.")
                 pdfs_text[file_name] = {f"texto_pagina{idx+1}": pag for idx, pag in enumerate(paginas)}
 
             except Exception as e:
-                print(f"Ocorreu um erro ao processar '{file_name}': {e}")
+                print(f"⚠️ Erro ao extrair '{file_name}': {e}")
             finally:
-                # Mover o PDF processado para a pasta de processados
                 shutil.move(input_pdf_path, processed_pdf_path)
-                print(f"PDF '{file_name}' movido para a pasta de processados: {processed_pdf_path}")
-        
+
         return pdfs_text

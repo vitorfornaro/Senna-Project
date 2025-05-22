@@ -1,7 +1,9 @@
 import os
 import shutil
+import tempfile
 import pikepdf
-from config import Config  # Certifique-se de importar a classe Config corretamente
+import fitz  # PyMuPDF
+from config import Config  # Certifique-se de que o caminho esteja correto
 
 class PDFDecryptor:
     def __init__(self, source_folder=Config.ENCRYPTED_FOLDER, 
@@ -50,3 +52,23 @@ class PDFDecryptor:
                 print(f"⚠️ Ocorreu um erro ao descriptografar: {e}")
 
         return decrypted_files
+
+    def decrypt_single_pdf(self, input_path):
+        """
+        Método específico para uso via API REST — descriptografa um único PDF.
+        Ele cria um arquivo temporário com o mesmo conteúdo.
+        """
+        try:
+            with open(input_path, "rb") as f:
+                pdf_data = f.read()
+
+            # Criar um arquivo temporário com o mesmo conteúdo
+            temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+            temp_file.write(pdf_data)
+            temp_file.close()
+
+            return temp_file.name
+
+        except Exception as e:
+            print(f"❌ Erro ao descriptografar PDF único: {e}")
+            return None

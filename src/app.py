@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import tempfile
 import os
 import uuid
+from unidecode import unidecode  # ⚠️ precisa estar no requirements.txt
 
 from pdf_decryptor import PDFDecryptor
 from pdf_text_extractor import PDFTextExtractor
@@ -12,67 +13,74 @@ app = Flask(__name__)
 
 @app.route('/perfilamento', methods=['POST'])
 def perfilamento():
+    print("📥 Requisição recebida para /perfilamento")
+
     if 'mdr' not in request.files:
+        print("❌ Campo 'mdr' não foi enviado.")
         return jsonify({"error": "Arquivo PDF não enviado no campo 'mdr'"}), 400
 
     arquivo = request.files['mdr']
     filename = f"{uuid.uuid4().hex}.pdf"
     temp_input = os.path.join(tempfile.gettempdir(), filename)
-
-    # Salvar o PDF temporariamente
+    print(f"📎 PDF salvo temporariamente como: {temp_input}")
     arquivo.save(temp_input)
 
     try:
-        # Descriptografar
+        print("🔐 Descriptografando PDF...")
         decryptor = PDFDecryptor()
         decrypted_path = decryptor.decrypt_single_pdf(temp_input)
         if not decrypted_path:
+            print("❌ Falha na descriptografia.")
             return _mapa_invalido_response()
 
-        # Extrair texto
-        extractor = PDFTextExtractor()
-        textos = extractor.extract_text_from_files([decrypted_path])
+        print(f"📄 Extraindo texto de: {decrypted_path}")
+        extractor = PDFTextExtractor(input_folder=os.path.dirname(decrypted_path),
+                                     processed_folder=os.path.dirname(decrypted_path))
+        textos = extractor.extract_text_from_pdfs([decrypted_path])
         if not textos:
+            print("❌ Nenhum texto foi extraído.")
             return _mapa_invalido_response()
 
-        # Extrair dados estruturados
+        print("📊 Extraindo dados estruturados...")
         data_extractor = PDFDataExtractor()
         df = data_extractor.extract_data(textos)
         if df.empty:
+            print("❌ Nenhum dado estruturado encontrado.")
             return _mapa_invalido_response()
 
-        # Aplicar perfilamento
+        print("🧠 Aplicando perfilamento...")
         df = Senninha.aplicar(df)
         df = df.where(df.notnull(), None)
 
-        nome = df.iloc[0]['nome'] if 'nome' in df.columns else ''
-        nif = df.iloc[0]['nif'] if 'nif' in df.columns else ''
+        nome = df.iloc[0].get('nome', '')
+        nif = df.iloc[0].get('nif', '')
         perfila = any(df['perfila'])
 
-        # Formatar a resposta final com snake_case
+        print(f"✅ Resultado: {nome} - {nif} - {'PERFILA' if perfila else 'NÃO PERFILA'}")
+
         info = df.to_dict(orient="records")
         info_snake = [renomear_chaves_para_snake_case(reg) for reg in info]
 
-        resposta = {
-            "nome": nome,
+        return jsonify({
+            "nome": unidecode(nome.lower().replace(" ", "")) if nome else None,
             "nif": nif,
             "perfila": perfila,
             "valid_map": True,
             "info_institutions": info_snake
-        }
-        return jsonify(resposta)
+        })
 
     except Exception as e:
-        print(f"Erro durante o processamento: {e}")
+        print(f"🔥 Erro crítico no processamento: {e}")
         return _mapa_invalido_response()
 
     finally:
         if os.path.exists(temp_input):
             os.remove(temp_input)
-        if 'decrypted_path' in locals() and os.path.exists(decrypted_path):
+        if 'decrypted_path' in locals() and decrypted_path and os.path.exists(decrypted_path):
             os.remove(decrypted_path)
 
 def _mapa_invalido_response():
+    print("⚠️ Resposta gerada: Mapa inválido")
     return jsonify({
         "nome": None,
         "nif": None,
@@ -82,18 +90,16 @@ def _mapa_invalido_response():
     })
 
 def renomear_chaves_para_snake_case(d):
-    return {
-        k.lower()
-         .replace(" ", "")
-         .replace("ã", "a")
-         .replace("á", "a")
-         .replace("é", "e")
-         .replace("í", "i")
-         .replace("ç", "c")
-         .replace("ô", "o")
-         .replace("ó", "o"): v
-        for k, v in d.items()
-    }
+    """Normaliza chaves e valores: sem acentos, espaços ou hífens, tudo minúsculo."""
+    resultado = {}
+    for k, v in d.items():
+        chave = unidecode(k.lower().replace(" ", "").replace("-", ""))
+        if isinstance(v, str):
+            valor = unidecode(v.lower().replace(" ", "").replace("-", ""))
+        else:
+            valor = v
+        resultado[chave] = valor
+    return resultado
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5001)
