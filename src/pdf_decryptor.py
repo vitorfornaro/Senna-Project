@@ -2,8 +2,7 @@ import os
 import shutil
 import tempfile
 import pikepdf
-import fitz  # PyMuPDF
-from config import Config  # Certifique-se de que o caminho esteja correto
+from config import Config  # Certifique-se de que está corretamente apontando para seu arquivo de config
 
 class PDFDecryptor:
     def __init__(self, source_folder=Config.ENCRYPTED_FOLDER, 
@@ -26,7 +25,7 @@ class PDFDecryptor:
         for index, pdf_file in enumerate(pdf_files, start=1):
             encrypted_pdf_path = os.path.join(self.source_folder, pdf_file)
 
-            # Remove todos os "decrypted_" do nome original
+            # Remove prefixos "decrypted_" se existirem
             file_name_clean = pdf_file
             while file_name_clean.startswith("decrypted_"):
                 file_name_clean = file_name_clean[len("decrypted_"):]
@@ -39,7 +38,7 @@ class PDFDecryptor:
                     pdf.save(decrypted_pdf_path)
                 print(f"✅ PDF desbloqueado com sucesso! Salvo em: {decrypted_pdf_path}")
 
-                # Move o PDF original para a pasta processed
+                # Move o original para a pasta processed
                 shutil.move(encrypted_pdf_path, os.path.join(self.processed_folder, pdf_file))
                 print(f"📁 PDF original criptografado movido para: {self.processed_folder}")
 
@@ -55,20 +54,27 @@ class PDFDecryptor:
 
     def decrypt_single_pdf(self, input_path):
         """
-        Método específico para uso via API REST — descriptografa um único PDF.
-        Ele cria um arquivo temporário com o mesmo conteúdo.
+        Descriptografa um único PDF — usado para a API REST.
+        Se estiver criptografado, remove proteção.
+        Caso contrário, apenas copia para um temporário.
         """
         try:
-            with open(input_path, "rb") as f:
-                pdf_data = f.read()
-
-            # Criar um arquivo temporário com o mesmo conteúdo
             temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
-            temp_file.write(pdf_data)
+            temp_path = temp_file.name
             temp_file.close()
 
-            return temp_file.name
+            try:
+                # Tenta descriptografar com pikepdf
+                with pikepdf.open(input_path) as pdf:
+                    pdf.save(temp_path)
+                print(f"🔓 PDF descriptografado com pikepdf: {temp_path}")
+            except pikepdf._qpdf.PasswordError:
+                # Se não estiver criptografado, apenas copia
+                shutil.copy(input_path, temp_path)
+                print(f"📎 PDF não criptografado, apenas copiado: {temp_path}")
+
+            return temp_path
 
         except Exception as e:
-            print(f"❌ Erro ao descriptografar PDF único: {e}")
+            print(f"❌ Erro ao processar PDF único: {e}")
             return None

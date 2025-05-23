@@ -1,7 +1,20 @@
-import pandas as pd
-import json
 import os
-from config import Config  # Importa a configuração
+import json
+import pandas as pd
+import numpy as np
+from config import Config
+
+# 🔄 Conversor robusto para JSON (resolve problemas com tipos NumPy)
+def _converter_json(obj):
+    if isinstance(obj, (np.bool_, bool)):
+        return bool(obj)
+    if isinstance(obj, (np.integer, int)):
+        return int(obj)
+    if isinstance(obj, (np.floating, float)):
+        return float(obj)
+    if isinstance(obj, (np.ndarray,)):
+        return obj.tolist()
+    return str(obj)
 
 class PDFOutputHandler:
     def __init__(self):
@@ -37,10 +50,12 @@ class PDFOutputHandler:
                 existing_data = []
 
             new_data = dataframe.to_dict(orient="records")
+            new_data = json.loads(json.dumps(new_data, default=_converter_json))
+
             updated_data = existing_data + new_data
 
             with open(self.json_path, 'w', encoding='utf-8') as json_file:
-                json.dump(updated_data, json_file, ensure_ascii=False, indent=4)
+                json.dump(updated_data, json_file, ensure_ascii=False, indent=2)
             print(f"🧾 Dados adicionados ao JSON geral: {self.json_path}")
         else:
             print("⚠️ Nenhum dado a salvar no JSON geral.")
@@ -56,8 +71,8 @@ class PDFOutputHandler:
 
         for nif, group in df_validos.groupby("nif"):
             dividas = group.to_dict(orient="records")
+            dividas = json.loads(json.dumps(dividas, default=_converter_json))
 
-            # Calcular resumo do perfilamento
             total_elegivel = sum(item["divida"] for item in dividas if item.get("perfil_individual"))
             perfila = total_elegivel >= 6000
 
@@ -65,15 +80,23 @@ class PDFOutputHandler:
                 "resumo": {
                     "nif": nif,
                     "divida_total_elegivel": round(total_elegivel, 2),
-                    "perfila": perfila
+                    "perfila": bool(perfila)
                 },
                 "dividas": dividas
             }
 
             json_path = os.path.join(self.client_json_folder, f"{nif}.json")
             try:
+                # ✅ Conversão total antes de salvar
+                serializable_data = json.loads(json.dumps(json_data, default=_converter_json))
+
+                # DEBUG opcional (pode comentar se não quiser imprimir)
+                print(f"🧪 Salvando JSON de cliente {nif}")
+                print(json.dumps(serializable_data, indent=2))
+
                 with open(json_path, "w", encoding="utf-8") as f:
-                    json.dump(json_data, f, ensure_ascii=False, indent=2)
+                    json.dump(serializable_data, f, ensure_ascii=False, indent=2)
+
                 clientes_salvos += 1
             except Exception as e:
                 print(f"❌ Erro ao salvar JSON para NIF {nif}: {e}")

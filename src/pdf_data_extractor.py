@@ -14,7 +14,10 @@ class PDFDataExtractor:
             'nif': re.compile(r'Nº de Identificação:\s+(\d+)'),
             'mesmapa': re.compile(r'Responsabilidades de crédito referentes a\s+(.+)', re.MULTILINE),
             'anomapa': re.compile(r'\b(19|20|21)\d{2}\b'),
-            'bloco_instituicao': re.compile(r'(Informação comunicada pela instituição:.*?)(?=Informação comunicada pela instituição:|$)', re.DOTALL)
+            'bloco_instituicao': re.compile(
+                r'(Informação comunicada pela instituição:.*?)(?=Informação comunicada pela instituição:|$)',
+                re.DOTALL
+            )
         }
 
         self.item_regexes = {
@@ -34,8 +37,17 @@ class PDFDataExtractor:
         match = self.regexes[key].search(text)
         return match.group(1).strip() if match else None
 
+    def _sanitize_numeric(self, valor):
+        if not valor or valor in ('-', ''):
+            return 0.0
+        try:
+            return float(valor.replace('.', '').replace(',', '.'))
+        except Exception:
+            return 0.0
+
     def extract_data(self, pdf_pages_dict):
         data = []
+
         for pdf_name, pages in pdf_pages_dict.items():
             for page_number, page_text in sorted(pages.items()):
                 try:
@@ -81,9 +93,16 @@ class PDFDataExtractor:
                                 valor = match.group(1).strip() if match else None
                                 if valor:
                                     valor = valor.replace("\xa0", "").replace(" ", "")
-                                if key in ['garantias', 'parcela'] and (valor in ('-', '', None)):
-                                    valor = '0'
-                                row[key] = valor
+
+                                if key in ['divida', 'parcela', 'garantias']:
+                                    row[key] = self._sanitize_numeric(valor)
+                                elif key == 'numdevedores':
+                                    try:
+                                        row[key] = int(valor) if valor else None
+                                    except Exception:
+                                        row[key] = None
+                                else:
+                                    row[key] = valor
 
                             data.append(row)
 

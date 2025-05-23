@@ -32,6 +32,9 @@ def process_pdfs():
 
     print(f"📊 Total de registros extraídos: {len(df)}")
 
+    # ✅ 🔍 Debug: ver registros de um NIF específico
+    print(df[df["nif"] == "275211339"])
+
     # ✅ Aplicar regras de perfilamento
     df = Senninha.aplicar(df)
 
