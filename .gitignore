@@ -12,3 +12,8 @@
 
 #Arquivo criado atraves do MAC
 .DS_Store
+
+# Dados sensíveis
+customers/
+maps/no_perfila/
+maps/customers
