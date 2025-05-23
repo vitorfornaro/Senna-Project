@@ -15,5 +15,5 @@
 
 # Dados sensíveis
 customers/
-maps/no_perfila/
-maps/customers
+src/maps/no_perfila/
+src/customers/

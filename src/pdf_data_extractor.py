@@ -22,12 +22,13 @@ class PDFDataExtractor:
 
         self.item_regexes = {
             'instituicao': re.compile(r'Informação comunicada pela instituição:\s+(.+)'),
-            'divida': re.compile(r'Total em dívida\s+do qual, em incumprimento\s+([\d\s,.]+) €'),
-            'litigio': re.compile(r'Em litígio judicial\s+(Sim|Não)'),
-            'parcela': re.compile(r'Abatido ao ativo\s+([\d\s,.]+) €'),
-            'garantias': re.compile(r"Tipo\s+Valor\s+Número\s*\n(?:.*?\n)?([-\d\s,.]+) €"),
+            'divida': re.compile(r'Total em dívida\s+do qual, em incumprimento\s+([\d\s,.]+)\s*€'),
+            'divida_fallback': re.compile(r'Total em dívida.*?([\d\s,.]+)\s*€', re.DOTALL),
+            'litigio': re.compile(r'Em litígio judicial\s+(Sim|Não)', re.IGNORECASE),
+            'parcela': re.compile(r'Abatido ao ativo.*?([\d\s,.]+)\s*€'),
+            'garantias': re.compile(r"Valor\s+[\d\s.,]+\s+([\d\s.,]+)\s*€", re.DOTALL),
             'numdevedores': re.compile(r"Nº devedores no contrato\s+(\d+)"),
-            'prodfinanceiro': re.compile(r"Produto financeiro\s+(.+?)\s+Tipo de responsabilidade"),
+            'prodfinanceiro': re.compile(r"Produto financeiro\s+(.+?)\s+Tipo de responsabilidade", re.DOTALL),
             'datinicio': re.compile(r"Início\s+(\d{4}-\d{2}-\d{2})"),
             'datfim': re.compile(r"Fim\s+(\d{4}-\d{2}-\d{2})"),
             'entradaincumpr': re.compile(r"Entrada incumpr\.\s+(\d{4}-\d{2}-\d{2})"),
@@ -87,10 +88,17 @@ class PDFDataExtractor:
                             }
 
                             for key, regex in self.item_regexes.items():
-                                if key == 'instituicao':
+                                if key == 'instituicao' or key == 'divida_fallback':
                                     continue
+
                                 match = regex.search(sub_bloco)
                                 valor = match.group(1).strip() if match else None
+
+                                # Fallback específico para campo divida
+                                if key == 'divida' and not valor:
+                                    fallback_match = self.item_regexes['divida_fallback'].search(sub_bloco)
+                                    valor = fallback_match.group(1).strip() if fallback_match else None
+
                                 if valor:
                                     valor = valor.replace("\xa0", "").replace(" ", "")
 
