@@ -1,19 +1,51 @@
-/venv
-/source
-/maps
-**/__pycache__
-/mpr_bajadas_eng
-/f2_senninha
-/POC/maps
-/src/__pycache__
+# Virtual environments
+venv/
+.venv/
 
-#Variaveis de ambiente
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos temporários
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Variáveis de ambiente
 .env
 
-#Arquivo criado atraves do MAC
-.DS_Store
-
-# Dados sensíveis
+# Dados sensíveis ou gerados automaticamente
 customers/
-src/maps/no_perfila/
 src/customers/
+src/maps/no_perfila/
+maps/
+POC/maps/
+mpr_bajadas_eng/
+source/
+
+# Arquivos de saída
+*.pdf
+*.csv
+*.json
+
+# Output de execução local (caso gere relatórios ou versões com timestamp)
+resultado_*.csv
+resultado_*.json
+
+# Cache de OCR ou imagens (se vier a usar futuramente)
+tmp/
+temp/
+*.png
+*.jpeg
+*.jpg
+*.tiff
+
+# IDEs e editores
+.vscode/
+.idea/
