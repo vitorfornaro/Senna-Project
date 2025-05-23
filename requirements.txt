@@ -58,3 +58,5 @@ pdf2image==1.17.0
 # Para OCR funcionar, instalar Tesseract no sistema:
 # macOS: brew install tesseract
 # Ubuntu: sudo apt install tesseract-ocr
+
+gunicorn==21.2.0

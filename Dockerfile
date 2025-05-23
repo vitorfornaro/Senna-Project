@@ -10,16 +10,19 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Define diretório de trabalho
+# Define diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copia os arquivos do projeto
+# Copia todos os arquivos do projeto local para dentro do container
 COPY . .
 
-# Atualiza pip e instala dependências Python
+# Define a variável de ambiente para incluir o diretório src no caminho do Python
+ENV PYTHONPATH=/app/src
+
+# Atualiza o pip e instala as dependências Python listadas no requirements.txt
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Cria as pastas necessárias no container
+# Cria todas as pastas necessárias no container
 RUN mkdir -p ./maps/encrypted/processed \
     ./maps/decrypted/processed \
     ./maps/outputs/json \
@@ -28,8 +31,8 @@ RUN mkdir -p ./maps/encrypted/processed \
     ./customers \
     ./logs
 
-# Expõe a porta usada pela aplicação Flask
+# Expõe a porta usada pela aplicação Flask (5001)
 EXPOSE 5001
 
-# Comando de entrada: inicia API com Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:5001", "src.app:app"]
+# Inicia a aplicação usando Gunicorn, apontando diretamente para src.app
+CMD ["gunicorn", "--bind", "0.0.0.0:5001", "app:app"]

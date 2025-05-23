@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  senna_project:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: senna_project
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./maps:/app/maps
+      - ./customers:/app/customers
+      - ./logs:/app/logs
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app/src
