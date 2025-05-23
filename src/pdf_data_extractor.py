@@ -94,7 +94,6 @@ class PDFDataExtractor:
                                 match = regex.search(sub_bloco)
                                 valor = match.group(1).strip() if match else None
 
-                                # Fallback específico para campo divida
                                 if key == 'divida' and not valor:
                                     fallback_match = self.item_regexes['divida_fallback'].search(sub_bloco)
                                     valor = fallback_match.group(1).strip() if fallback_match else None
@@ -120,5 +119,19 @@ class PDFDataExtractor:
                     with open(LOG_FILE, "a", encoding="utf-8") as f:
                         f.write(log_msg)
 
-        print(f"\n📊 Total de linhas extraídas: {len(data)}")
-        return pd.DataFrame(data)
+        df_final = pd.DataFrame(data)
+
+        # ✅ Garante que as colunas críticas existam, mesmo que ausentes
+        colunas_esperadas = {
+            'divida': 0.0,
+            'parcela': 0.0,
+            'garantias': 0.0,
+            'numdevedores': None
+        }
+
+        for coluna, valor_padrao in colunas_esperadas.items():
+            if coluna not in df_final.columns:
+                df_final[coluna] = valor_padrao
+
+        print(f"\n📊 Total de linhas extraídas: {len(df_final)}")
+        return df_final
