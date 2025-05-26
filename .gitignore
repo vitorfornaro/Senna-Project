@@ -28,6 +28,7 @@ maps/
 POC/maps/
 mpr_bajadas_eng/
 source/
+resumo_por_cliente.json
 
 # Arquivos de saída
 *.pdf
