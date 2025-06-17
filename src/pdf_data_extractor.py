@@ -1,11 +1,34 @@
 import re
 import os
+import unicodedata
 from datetime import datetime
 import pandas as pd
 
 LOG_FOLDER = "./logs"
 os.makedirs(LOG_FOLDER, exist_ok=True)
 LOG_FILE = os.path.join(LOG_FOLDER, "erros_processamento.txt")
+
+# Função para limpar e padronizar texto
+def limpar_nome(texto):
+    if pd.isna(texto):
+        return ""
+    texto = unicodedata.normalize('NFKD', texto).encode('ASCII', 'ignore').decode('utf-8')
+    texto = texto.lower().replace("sucursal em portugal", "")
+    texto = texto.replace(",", "").replace(".", "").strip()
+    return texto
+
+# Carrega o CSV de mapeamento
+caminho_csv = os.path.join(os.path.dirname(__file__), "bancos_padrao.csv")
+df_map = pd.read_csv(caminho_csv)
+
+# Função para normalizar nome da instituição
+def normalizar_nome_banco(nome_extraido):
+    nome_limpo = limpar_nome(nome_extraido)
+    for _, row in df_map.iterrows():
+        chave = limpar_nome(row['chave'])
+        if chave in nome_limpo:
+            return row['name']
+    return nome_extraido
 
 class PDFDataExtractor:
     def __init__(self):
@@ -84,7 +107,7 @@ class PDFDataExtractor:
                                 'nif': nif,
                                 'mesmapa': mesmapa.lower() if mesmapa else None,
                                 'anomapa': anomapa,
-                                'instituicao': nome_inst.lower()
+                                'instituicao': normalizar_nome_banco(nome_inst).lower()
                             }
 
                             for key, regex in self.item_regexes.items():
@@ -121,7 +144,6 @@ class PDFDataExtractor:
 
         df_final = pd.DataFrame(data)
 
-        # ✅ Garante que as colunas críticas existam, mesmo que ausentes
         colunas_esperadas = {
             'divida': 0.0,
             'parcela': 0.0,
