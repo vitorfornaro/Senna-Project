@@ -1,0 +1,22 @@
+FROM node:18-bullseye
+
+# 1. Instala dependências do sistema (incluindo Python)
+USER root
+
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip curl gnupg && \
+    apt-get clean
+
+# 2. Instala o n8n
+RUN npm install --location=global n8n
+
+# 3. Cria diretório de trabalho
+WORKDIR /data
+
+# 4. Define usuário n8n
+ENV N8N_USER=node
+ENV N8N_HOME=/data
+
+EXPOSE 5678
+
+CMD ["n8n"]

@@ -1,0 +1,46 @@
+version: "3.7"
+
+services:
+  n8n:
+    build:
+      context: .
+      dockerfile: Dockerfile-n8n
+    ports:
+      - 5678:5678
+    environment:
+      - N8N_DEPLOYMENT_TYPE=production
+      - N8N_DIAGNOSTICS_ENABLED=false
+      - N8N_HOST=localhost
+      - WEBHOOK_URL=http://localhost:5678
+      - N8N_EMAIL_MODE=smtp
+      - N8N_SKIP_WEBHOOK_DEREGISTRATION_SHUTDOWN=true
+      - N8N_LICENSE_KEY=64dee1f2-4b65-4ee4-b730-4f8f533383b5
+      - N8N_USER_MANAGEMENT_DISABLED=false
+      - N8N_ADMIN_EMAIL=admin@gobravo.pt
+      - N8N_ADMIN_PASSWORD=Admin123!
+    volumes:
+      - ./senna_project:/app/senna_project
+    networks:
+      - senna_net
+
+  senna_project:
+    build:
+      context: ./senna_project
+      dockerfile: Dockerfile  # <- Certifique-se de que seu Dockerfile Flask esteja aqui
+    container_name: senna_project
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./senna_project:/app/senna_project
+      - ./maps:/app/maps
+      - ./logs:/app/logs
+      - ./customers:/app/customers
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app/senna_project/src
+    networks:
+      - senna_net
+
+networks:
+  senna_net:
+    driver: bridge
