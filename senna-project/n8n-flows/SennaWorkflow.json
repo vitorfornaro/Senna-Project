@@ -1,0 +1,737 @@
+{
+  "name": "SennaWorkflow",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f285e590-5b5a-4e44-bf35-9cd939ee037d",
+              "leftValue": "={{ $json.valid_map }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        60,
+        440
+      ],
+      "id": "166bf178-7551-478b-8332-fa4bf533ae47",
+      "name": "It's an Mapa"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-mdr",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -820,
+        440
+      ],
+      "id": "b2d7c197-f4e8-4740-99d4-b6a797f935bd",
+      "name": "API MDR | Webhook",
+      "webhookId": "143e983f-b618-4cd7-8da2-19266d387666"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/app/senna_project/input/{{ $binary.mdr.fileName }}",
+        "dataPropertyName": "=mdr",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -1040,
+        -220
+      ],
+      "id": "d1f9b375-ad3b-4d62-9439-32ed0dd45eba",
+      "name": "Save in disk the MDR"
+    },
+    {
+      "parameters": {
+        "command": "=python3 /app/senna_project/src/main.py \"/app/senna_project/input/{{ $binary.mdr.fileName }}\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -660,
+        -180
+      ],
+      "id": "1ec13275-6107-4153-957b-1c14f3958fc9",
+      "name": "Start the Senna Project"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2c1c6a8a-5cf9-4b7e-bf76-596e64fcb5cb",
+              "leftValue": "={{ $('Perfilamento').item.json.perfila }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        280,
+        260
+      ],
+      "id": "deea5fcd-c209-4299-bd08-095039744669",
+      "name": "Perfila"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c82013ed-f912-4860-8afa-6ea2401dd562",
+              "leftValue": "={{ $json.perfila }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": "=",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        400
+      ],
+      "id": "09cd9d5b-db02-4691-abe7-56abeca10b98",
+      "name": "No perfila"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "https://vanex-api.resuelve.io/v1/bot/webhook/update-stage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "mobile_number",
+              "value": "=351{{ $('API MDR | Webhook').item.json.body.phone }}"
+            },
+            {
+              "name": "to_stage",
+              "value": "No perfila"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        940,
+        400
+      ],
+      "id": "8016f2fb-518f-4ec0-a762-7c3e98767839",
+      "name": "Cambio de etapa | No perfila",
+      "onError": "continueRegularOutput",
+      "notes": "Si el lead esta en una etapa que no es posible revertir o ya se encuentra en esa etapa, Vanex bloquea el cambio y devuelve un error. Continua en ese caso."
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "https://vanex-api.resuelve.io/v1/bot/webhook/update-stage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "mobile_number",
+              "value": "=351{{ $('API MDR | Webhook').item.json.body.phone }}"
+            },
+            {
+              "name": "to_stage",
+              "value": "Perfila"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        540,
+        200
+      ],
+      "id": "28e8d114-54de-4c3a-9800-e26f53f47284",
+      "name": "Cambio de etapa | Perfila",
+      "notesInFlow": false,
+      "onError": "continueRegularOutput",
+      "notes": "Si el lead esta en una etapa que no es posible revertir o ya se encuentra en esa etapa, Vanex bloquea el cambio y devuelve un error. Continua en ese caso."
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": 200,\n  \"reason\": \"OK\",\n  \"details\": \"Valid Map\",\n  \"perfila\": {{ $('Start the Senna Project').item.json.stdout.parseJson().perfila }},\n  \"opportunitex_response\": {{ JSON.stringify($json.record) }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        980,
+        740
+      ],
+      "id": "ffb2a4a9-21ad-4ebc-bd20-595d9c5d4ab0",
+      "name": "Valid Map"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": 400,\n  \"reason\": \"Bad Request\",\n  \"details\": \"Received MDR is not an Mapa\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        280,
+        800
+      ],
+      "id": "51fb6fe9-7822-4247-b9d1-fa380d113118",
+      "name": "Invalid Map"
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $('API MDR | Webhook').item.binary.mdr.fileName }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        400
+      ],
+      "id": "f05666e7-589c-4f30-8b24-6b804027d681",
+      "name": "Read File again for Saving on Drive"
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $('API MDR | Webhook').item.binary.mdr.fileName }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        180
+      ],
+      "id": "694a9a6a-8493-42b0-b10c-bd684c307eaa",
+      "name": "Read File again for Saving on Drive1"
+    },
+    {
+      "parameters": {
+        "command": "=rm \"{{ $('Save in disk the MDR').item.binary.mdr.fileName }}\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1820,
+        360
+      ],
+      "id": "2f5cfc1c-ed73-4c63-b1ec-f5d0201f2e5a",
+      "name": "Remove mdr file from n8n disk"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = JSON.parse($('Start the Senna Project').first().json.stdout)\n\n// Validar que data existe y tiene info_institutions\nif (!data || !data.info_institutions || !Array.isArray(data.info_institutions)) {\n  console.log('Error: info_institutions no existe o no es un array');\n  return { error: 'info_institutions no encontrado' };\n}\n\n// Filtrar solo los elementos con perfil_individual: true\nconst perfilIndividualItems = data.info_institutions.filter(item => item.perfil_individual === true);\nconsole.log(perfilIndividualItems)\n\n// Sumar todas las deudas de esos elementos\nconst totalDeuda = perfilIndividualItems.reduce((sum, item) => sum + item.divida, 0);\n\nreturn {\n  total_debt_amount: Math.round(totalDeuda)\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1380,
+        180
+      ],
+      "id": "38bce337-4209-4d35-95d2-8e5d0b5981e1",
+      "name": "Calc total debt Amount"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://chat.googleapis.com/v1/spaces/AAQAk4REatc/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=5kGLm-utDx6nw2NaCtnuXdpBBk4cRldQYwfPkXQi-74",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "=Perfilamiento Senninha: {{ $('It\\'s an Mapa').item.json.stdout.parseJson().perfila }}\nEnlace Vanex: https://vanex.io/priorities/search?q={{ $('API MDR | Webhook').item.json.body.phone }}\nEnlace Mapa: {{ $('Save Perfila | MDR | File').item.json.webViewLink }}\nDeuda total: €{{ $('Calc total debt Amount').item.json.total_debt_amount }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1600,
+        180
+      ],
+      "id": "fe99e8ef-4372-4ec5-a339-0e41a2ed97f6",
+      "name": "Notify to GChat"
+    },
+    {
+      "parameters": {
+        "content": "## Valida si el .pdf enviado es un mapa o no",
+        "height": 1060,
+        "width": 600
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -80
+      ],
+      "id": "a9381ef2-78c1-4019-876b-2c8905bc87b8",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Vanex Activities",
+        "height": 560,
+        "width": 1640,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        180,
+        60
+      ],
+      "id": "0d8519b5-7852-47a7-abd0-93da7c96caf4",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://opportunitex.resuelve.io/api/v2/records",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        780,
+        740
+      ],
+      "id": "fa3a99c3-0e23-409e-aa95-30a9742bd372",
+      "name": "Opportunitex"
+    },
+    {
+      "parameters": {
+        "content": "## Opportunitex",
+        "height": 340,
+        "width": 700,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        520,
+        620
+      ],
+      "id": "6d8c261b-ffbd-4eae-91ec-98c08c1f6555",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://vanex-api.resuelve.io/v1/bot/webhook/reassignment-source",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "source_name",
+              "value": "bot_senninha"
+            },
+            {
+              "name": "mobile_number",
+              "value": "=351{{ $('API MDR | Webhook').item.json.body.phone }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        180
+      ],
+      "id": "ebf76bb9-5d6f-4d71-b2b1-2c87091414e4",
+      "name": "Reasignación"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Acceder a los datos del webhook.\n// Asegúrate de que el nombre del nodo 'API MDR | Webhook' sea exacto,\n// incluyendo mayúsculas, minúsculas y espacios.\nconst webhookBody = $('API MDR | Webhook').item.json.body;\n\n// Construir el objeto JSON deseado\nconst outputData = {\n  \"record\": {\n    \"data\": {\n      \"system_id\": webhookBody.system_id,\n      \"user\": { // <-- Se agregó la llave de apertura que faltaba\n        \"names\": webhookBody.fname,\n        \"first_surname\": \"\",\n        \"second_surname\": \"\",\n        \"email\": webhookBody.email,\n        \"phone\": webhookBody.phone,\n        \"mobile\": webhookBody.phone, // Asumiendo que mobile es el mismo que phone\n        \"country\": webhookBody.country,\n        \"contact_by_wa\": true,\n        \"terms_conditions\": true\n      },\n      \"debts\": [\n        {\n          \"debt_amount\": \"40000\" // Si necesitas que sea un número, quita las comillas: 40000\n        }\n      ],\n      \"mkt\": {\n        \"landing\": webhookBody.landing\n      }\n    }\n  }\n};\n\n// El nodo de Code en n8n espera que retornes un array de items.\n// Cada item debe tener una propiedad 'json'.\nreturn [{ json: outputData }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        580,
+        740
+      ],
+      "id": "536ecd6e-2108-4ff6-bddd-637270efae1b",
+      "name": "Opportunitex JSON"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "20c256e2-5c75-4be2-ab72-bf62e777dd8d",
+              "leftValue": "={{ $json.valid_map }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        60,
+        800
+      ],
+      "id": "f73c0cac-5ae5-47c1-a556-1e3ffeeba873",
+      "name": "It's not an mapa"
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $json[\"stdout\"];\n\ntry {\n  const result = JSON.parse(output);\n  return [{ json: result }];\n} catch (e) {\n  return [{\n    json: {\n      error: \"Falha ao fazer parse do stdout\",\n      rawOutput: output\n    }\n  }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1220,
+        -60
+      ],
+      "id": "53b35268-cae5-4728-91db-4cf8833d0721",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        -860,
+        -240
+      ],
+      "id": "7dba69c6-548c-47ed-b40f-47fb9134ea81",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://senna_project:5001/perfilamento",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "mdr",
+              "inputDataFieldName": "mdr"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -560,
+        440
+      ],
+      "id": "9e35c16a-377d-4a53-871e-2643f0b59cb6",
+      "name": "Perfilamento"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Mapeamento normalizado das instituições\nconst mapping = {\n  \"orthogon\": \"Orthogon\",\n  \"revolut\": \"Revolut Bank\",\n  \"volkswagen\": \"Volkswagen Bank GMBH\",\n  \"raize\": \"Raize\",\n  \"sfs\": \"SFS - Financial Services\",\n  \"monese\": \"Monese\",\n  \"cofidis\": \"Cofidis\",\n  \"unicre\": \"Unicre\",\n  \"novoatlantico\": \"Novo Atlântico\",\n  \"atlanticoeuropa\": \"Banco Atlantico Europa\",\n  \"big\": \"Banco de Investimento Global\",\n  \"best\": \"Banco Best\",\n  \"ctt\": \"Banco CTT\",\n  \"credibom\": \"Credibom\",\n  \"activobank\": \"ActivoBank\",\n  \"bancomontepio\": \"Banco Montepio\",\n  \"bankinter\": \"Bankinter\",\n  \"bnpparibas\": \"BNP Paribas\",\n  \"bni\": \"BNI Europa\",\n  \"bps\": \"Banco Português de Gestão\",\n  \"bic\": \"Banco BIC\",\n  \"bbva\": \"BBVA\",\n  \"bnp\": \"BNP Paribas\",\n  \"bnpcreditopessoal\": \"BNP Crédito Pessoal\",\n  \"cgd\": \"Caixa Geral de Depósitos\",\n  \"cetelem\": \"Cetelem\",\n  \"cmc\": \"CMC Markets\",\n  \"créditoagricola\": \"Crédito Agrícola\",\n  \"deutschebank\": \"Deutsche Bank\",\n  \"ebankit\": \"ebankIT\",\n  \"eurobic\": \"EuroBic\",\n  \"eurobank\": \"Eurobank\",\n  \"finibanco\": \"Finibanco\",\n  \"finantia\": \"Banco Finantia\",\n  \"grupoageas\": \"Grupo Ageas\",\n  \"grupoocidental\": \"Grupo Ocidental\",\n  \"ing\": \"ING\",\n  \"jpmorgan\": \"JP Morgan\",\n  \"kuanto\": \"KuantoKusta\",\n  \"lendon\": \"Lendon.pt\",\n  \"millennium\": \"Millennium BCP\",\n  \"moneybox\": \"MoneyBox\",\n  \"monzo\": \"Monzo\",\n  \"morganstanley\": \"Morgan Stanley\",\n  \"mymoney\": \"MyMoney\",\n  \"n26\": \"N26\",\n  \"nb\": \"NOVO BANCO\",\n  \"novobanco\": \"NOVO BANCO\",\n  \"oportocredito\": \"Oporto Crédito\",\n  \"opcredit\": \"OP Credit\",\n  \"paypal\": \"PayPal\",\n  \"pepper\": \"Pepper\",\n  \"payshop\": \"Payshop\",\n  \"plataformafinanceira\": \"Plataforma Financeira\",\n  \"pluribank\": \"Pluribank\",\n  \"popular\": \"Banco Popular\",\n  \"prestamer\": \"Prestamer\",\n  \"raiffeisen\": \"Raiffeisen Bank\",\n  \"santander\": \"Banco Santander Totta\",\n  \"seculo\": \"Banco Século\",\n  \"simplic\": \"Simplic\",\n  \"sofi\": \"Sofi\",\n  \"solidario\": \"Banco Solidário\",\n  \"sofisa\": \"Banco Sofisa\",\n  \"transferwise\": \"Wise (ex TransferWise)\",\n  \"unicredit\": \"Unicredit\",\n  \"viabuy\": \"Viabuy\",\n  \"wizink\": \"Wizink Bank\",\n  \"abanca\": \"Abanca\",\n  \"openbank\": \"Openbank\",\n  \"banif\": \"Banif\",\n  \"barclays\": \"Barclays\",\n  \"bancoinvest\": \"Banco Invest\",\n  \"bestbank\": \"Best Bank\",\n  \"bmce\": \"BMCE Bank\",\n  \"bancomillennium\": \"Banco Millennium\",\n  \"bancomontepiogeral\": \"Banco Montepio Geral\",\n  \"bancomontepiocrédito\": \"Banco Montepio Crédito\",\n  \"bancomontepiocomercial\": \"Banco Montepio Comercial\",\n  \"novobanco2\": \"NOVO BANCO\",\n  \"novobancocrédito\": \"NOVO BANCO Crédito\",\n  \"banconacional\": \"Banco Nacional Ultramarino\",\n  \"banconif\": \"Banco NIF\",\n  \"bancomontepiopoupança\": \"Banco Montepio Poupança\",\n};\n\nconst unidecode = (str) => str.normalize(\"NFD\").replace(/[\\u0300-\\u036f]/g, \"\");\n\nreturn items.map(item => {\n  const output = [];\n  const registros = item.json.info_institutions;\n\n  for (const reg of registros) {\n    const original = reg.instituicao || '';\n    const normalizado = unidecode(original.toLowerCase().replace(/[\\s\\-]/g, \"\"));\n    const nomePadrao = mapping[normalizado] || original;\n    output.push({ ...reg, instituicao_formatada: nomePadrao });\n  }\n\n  return {\n    json: {\n      ...item.json,\n      info_institutions: output\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        440
+      ],
+      "id": "4fea7a98-7433-4908-85e5-837cbb22823f",
+      "name": "Standard_instituiciones"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "It's an Mapa": {
+      "main": [
+        [
+          {
+            "node": "Perfila",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "No perfila",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Opportunitex JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "API MDR | Webhook": {
+      "main": [
+        [
+          {
+            "node": "Perfilamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save in disk the MDR": {
+      "main": [
+        []
+      ]
+    },
+    "Start the Senna Project": {
+      "main": [
+        []
+      ]
+    },
+    "Perfila": {
+      "main": [
+        [
+          {
+            "node": "Cambio de etapa | Perfila",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No perfila": {
+      "main": [
+        [
+          {
+            "node": "Cambio de etapa | No perfila",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cambio de etapa | No perfila": {
+      "main": [
+        [
+          {
+            "node": "Read File again for Saving on Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cambio de etapa | Perfila": {
+      "main": [
+        [
+          {
+            "node": "Reasignación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read File again for Saving on Drive": {
+      "main": [
+        [
+          {
+            "node": "Remove mdr file from n8n disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read File again for Saving on Drive1": {
+      "main": [
+        [
+          {
+            "node": "Calc total debt Amount",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calc total debt Amount": {
+      "main": [
+        [
+          {
+            "node": "Notify to GChat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify to GChat": {
+      "main": [
+        [
+          {
+            "node": "Remove mdr file from n8n disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Opportunitex": {
+      "main": [
+        [
+          {
+            "node": "Valid Map",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reasignación": {
+      "main": [
+        [
+          {
+            "node": "Read File again for Saving on Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Opportunitex JSON": {
+      "main": [
+        [
+          {
+            "node": "Opportunitex",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "It's not an mapa": {
+      "main": [
+        [
+          {
+            "node": "Invalid Map",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Perfilamento": {
+      "main": [
+        [
+          {
+            "node": "Standard_instituiciones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standard_instituiciones": {
+      "main": [
+        [
+          {
+            "node": "It's an Mapa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4624299a-122d-4814-88cc-b481752142b9",
+  "meta": {
+    "instanceId": "b7aa4255579f5544c2ca21eec71de740a1c8f06d49b7f9c3091e9bd22d247c5e"
+  },
+  "id": "OLWY1xLQQuqIYFTi",
+  "tags": []
+}
