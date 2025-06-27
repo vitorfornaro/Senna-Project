@@ -55,3 +55,6 @@ temp/
 # EXCEÇÃO: permitir os fluxos do n8n exportados manualmente
 !n8n-flows/*.json
 !senna-project/n8n-flows/*.json
+
+# Permitir arquivos JSON dos fluxos do n8n
+!senna-project/n8n-flows/*.json
