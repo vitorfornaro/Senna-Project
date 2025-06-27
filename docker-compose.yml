@@ -1,0 +1,45 @@
+version: "3.7"
+
+services:
+  n8n:
+    image: n8nio/n8n:1.97.1  # ✅ Usa imagem oficial para estabilidade
+    ports:
+      - 5678:5678
+    environment:
+      - N8N_DEPLOYMENT_TYPE=production
+      - N8N_DIAGNOSTICS_ENABLED=false
+      - N8N_HOST=localhost
+      - WEBHOOK_URL=http://localhost:5678
+      - N8N_EMAIL_MODE=smtp
+      - N8N_USER_MANAGEMENT_DISABLED=false
+      - N8N_ADMIN_EMAIL=admin@gobravo.pt
+      - N8N_ADMIN_PASSWORD=Admin123!
+    volumes:
+      - n8n_data:/home/node/.n8n  # ✅ Volume persistente para salvar os fluxos
+    networks:
+      - senna_net
+
+  senna_project:
+    build:
+      context: ./senna-project     # ✅ Corrigido: nome da pasta com hífen
+      dockerfile: Dockerfile       # Certifique-se de que esse Dockerfile está dentro da pasta `senna-project`
+    container_name: senna_project
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./senna-project:/app/senna_project  # ✅ Corrigido aqui também
+      - ./maps:/app/maps
+      - ./logs:/app/logs
+      - ./customers:/app/customers
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app/senna_project/src
+    networks:
+      - senna_net
+
+volumes:
+  n8n_data:
+
+networks:
+  senna_net:
+    driver: bridge
