@@ -27,16 +27,17 @@ class Senninha:
             else:
                 df[col] = 0.0
 
+        # === REGRA INDIVIDUAL (por linha) ===
         def regra_perfil_individual(row):
             garantia_ok = pd.isna(row['garantias']) or row['garantias'] == 0
             litigio_ok = isinstance(row['litigio'], str) and row['litigio'].replace('\xa0', '').strip().lower() == 'não'
             produto = str(row.get('prodfinanceiro', '')).strip().lower()
 
-            # ❌ Regra 1: nunca perfilamos crédito habitação
+            # ❌ Nunca perfilar crédito à habitação
             if 'habitação' in produto or 'habitacao' in produto:
                 return False
 
-            # ⚠️ Regra 2: automóvel
+            # ⚠️ Crédito automóvel exige dívida mínima e sem garantia
             if 'automóvel' in produto or 'automovel' in produto:
                 if not garantia_ok:
                     return False
@@ -47,14 +48,16 @@ class Senninha:
 
         df['perfil_individual'] = df.apply(regra_perfil_individual, axis=1)
 
-        # Soma somente as dívidas que perfilaram individualmente
-        soma = df[df['perfil_individual']]['divida'].sum()
-        grupo_perfila = soma >= 6000
+        # === REGRA DE GRUPO ===
+        df['perfila'] = False  # zera tudo
 
-        df['perfila'] = df['perfil_individual'] & grupo_perfila
+        for instituicao, grupo in df.groupby("instituicao"):
+            tem_garantia = (grupo.get('garantias') > 0).any()
+            tem_habitacao = grupo['prodfinanceiro'].astype(str).str.lower().str.contains("habitacao|habitação").any()
 
-        print(f"\n💰 Soma das dívidas elegíveis: € {soma:,.2f}")
-        print(f"🧾 Resultado final: {'✅ PERFILA' if grupo_perfila else '❌ NÃO PERFILA'}")
+            if not tem_garantia and not tem_habitacao:
+                indices = grupo[grupo['perfil_individual']].index
+                df.loc[indices, 'perfila'] = True
 
         return df
 
@@ -74,8 +77,7 @@ class Senninha:
             if not nif:
                 continue
 
-            # Soma apenas as dívidas com perfil_individual = True
-            dividas_elegiveis = grupo[grupo['perfil_individual']]
+            dividas_elegiveis = grupo[grupo['perfila']]
             total_elegivel = dividas_elegiveis['divida'].sum()
             perfila = total_elegivel >= 6000
 
