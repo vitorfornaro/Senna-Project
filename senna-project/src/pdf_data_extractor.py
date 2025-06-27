@@ -107,7 +107,8 @@ class PDFDataExtractor:
                                 'nif': nif,
                                 'mesmapa': mesmapa.lower() if mesmapa else None,
                                 'anomapa': anomapa,
-                                'instituicao': normalizar_nome_banco(nome_inst).lower()
+                                #'instituicao': normalizar_nome_banco(nome_inst).lower(),
+                                'instituicao': nome_inst.lower()  # Deixa a instituição original, sem padronizar
                             }
 
                             for key, regex in self.item_regexes.items():
