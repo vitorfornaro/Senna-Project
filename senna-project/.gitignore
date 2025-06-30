@@ -35,6 +35,9 @@ resumo_por_cliente.json
 *.csv
 *.json
 
+# EXCEÇÃO: manter banco de referência
+!senna-project/src/bancos_padrao.csv
+
 # Output de execução local (caso gere relatórios ou versões com timestamp)
 resultado_*.csv
 resultado_*.json
