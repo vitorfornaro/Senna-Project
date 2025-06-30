@@ -6,14 +6,14 @@ services:
     ports:
       - 5678:5678
     environment:
-      - N8N_DEPLOYMENT_TYPE=production
-      - N8N_DIAGNOSTICS_ENABLED=false
-      - N8N_HOST=192.168.102.125  # ✅ IP da máquina real para que o webhook funcione fora do container
-      - WEBHOOK_URL=http://192.168.102.125:5678  # ✅ URL externa real para chamadas webhook funcionarem
-      - N8N_EMAIL_MODE=smtp
-      - N8N_USER_MANAGEMENT_DISABLED=false
-      - N8N_ADMIN_EMAIL=admin@gobravo.pt
-      - N8N_ADMIN_PASSWORD=Admin123!
+      - N8N_DEPLOYMENT_TYPE=${N8N_DEPLOYMENT_TYPE}
+      - N8N_DIAGNOSTICS_ENABLED=${N8N_DIAGNOSTICS_ENABLED}
+      - N8N_HOST=${N8N_HOST}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - N8N_EMAIL_MODE=${N8N_EMAIL_MODE}
+      - N8N_USER_MANAGEMENT_DISABLED=${N8N_USER_MANAGEMENT_DISABLED}
+      - N8N_ADMIN_EMAIL=${N8N_ADMIN_EMAIL}
+      - N8N_ADMIN_PASSWORD=${N8N_ADMIN_PASSWORD}
     volumes:
       - n8n_data:/home/node/.n8n  # ✅ Volume persistente para salvar os fluxos
     networks:
