@@ -29,10 +29,10 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        60,
-        440
+        1140,
+        1760
       ],
-      "id": "166bf178-7551-478b-8332-fa4bf533ae47",
+      "id": "a8eef821-bd29-4916-9dc4-52411fadc2d9",
       "name": "It's an Mapa"
     },
     {
@@ -45,41 +45,12 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -820,
-        440
+        -1200,
+        1120
       ],
-      "id": "b2d7c197-f4e8-4740-99d4-b6a797f935bd",
+      "id": "9f0f9b5f-5b00-4c3f-9e5f-c217af56ecb1",
       "name": "API MDR | Webhook",
       "webhookId": "143e983f-b618-4cd7-8da2-19266d387666"
-    },
-    {
-      "parameters": {
-        "operation": "write",
-        "fileName": "=/app/senna_project/input/{{ $binary.mdr.fileName }}",
-        "dataPropertyName": "=mdr",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.readWriteFile",
-      "typeVersion": 1,
-      "position": [
-        -1060,
-        -640
-      ],
-      "id": "d1f9b375-ad3b-4d62-9439-32ed0dd45eba",
-      "name": "Save in disk the MDR"
-    },
-    {
-      "parameters": {
-        "command": "=python3 /app/senna_project/src/main.py \"/app/senna_project/input/{{ $binary.mdr.fileName }}\""
-      },
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [
-        -680,
-        -640
-      ],
-      "id": "1ec13275-6107-4153-957b-1c14f3958fc9",
-      "name": "Start the Senna Project"
     },
     {
       "parameters": {
@@ -109,10 +80,10 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        280,
-        260
+        1360,
+        1440
       ],
-      "id": "deea5fcd-c209-4299-bd08-095039744669",
+      "id": "91582ffe-5e7c-4c05-9252-f08fd858e78b",
       "name": "Perfila"
     },
     {
@@ -144,10 +115,10 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        720,
-        400
+        1840,
+        1700
       ],
-      "id": "09cd9d5b-db02-4691-abe7-56abeca10b98",
+      "id": "f1349da1-2df7-4bc3-a47c-62e130a3c21e",
       "name": "No perfila"
     },
     {
@@ -172,10 +143,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        940,
-        400
+        2060,
+        1700
       ],
-      "id": "8016f2fb-518f-4ec0-a762-7c3e98767839",
+      "id": "c93eebbf-f423-499e-b600-016cab102b1a",
       "name": "Cambio de etapa | No perfila",
       "onError": "continueRegularOutput",
       "notes": "Si el lead esta en una etapa que no es posible revertir o ya se encuentra en esa etapa, Vanex bloquea el cambio y devuelve un error. Continua en ese caso."
@@ -202,10 +173,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        540,
-        200
+        1820,
+        1440
       ],
-      "id": "28e8d114-54de-4c3a-9800-e26f53f47284",
+      "id": "00149c09-3b73-49c4-b42c-dd7d0157894b",
       "name": "Cambio de etapa | Perfila",
       "notesInFlow": false,
       "onError": "continueRegularOutput",
@@ -220,10 +191,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
       "position": [
-        980,
-        740
+        2220,
+        2120
       ],
-      "id": "ffb2a4a9-21ad-4ebc-bd20-595d9c5d4ab0",
+      "id": "cd6a8f93-e498-4968-ab05-59db45ad3616",
       "name": "Valid Map"
     },
     {
@@ -235,10 +206,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
       "position": [
-        340,
-        780
+        1340,
+        2120
       ],
-      "id": "51fb6fe9-7822-4247-b9d1-fa380d113118",
+      "id": "eed595ca-37a1-49c2-8ffd-080c024a9fe7",
       "name": "Invalid Map"
     },
     {
@@ -249,10 +220,10 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        1160,
-        400
+        2320,
+        1700
       ],
-      "id": "f05666e7-589c-4f30-8b24-6b804027d681",
+      "id": "c1cf534f-c60c-4440-a16e-6696c6441d73",
       "name": "Read File again for Saving on Drive"
     },
     {
@@ -263,10 +234,10 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        1040,
-        180
+        2300,
+        1440
       ],
-      "id": "694a9a6a-8493-42b0-b10c-bd684c307eaa",
+      "id": "03e75c2a-7106-4003-bf1f-2516de892c77",
       "name": "Read File again for Saving on Drive1"
     },
     {
@@ -276,10 +247,10 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        1820,
-        360
+        3160,
+        1600
       ],
-      "id": "2f5cfc1c-ed73-4c63-b1ec-f5d0201f2e5a",
+      "id": "cf39cc6f-e844-4d7e-a456-0b956cf3fe70",
       "name": "Remove mdr file from n8n disk"
     },
     {
@@ -289,10 +260,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1380,
-        180
+        2600,
+        1440
       ],
-      "id": "38bce337-4209-4d35-95d2-8e5d0b5981e1",
+      "id": "91559bd8-2b32-4918-a28b-e1854fd43ce3",
       "name": "Calc total debt Amount"
     },
     {
@@ -313,41 +284,41 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1600,
-        180
+        2860,
+        1440
       ],
-      "id": "fe99e8ef-4372-4ec5-a339-0e41a2ed97f6",
+      "id": "e1f0c549-96c9-48e0-b8aa-89fd296268a6",
       "name": "Notify to GChat"
     },
     {
       "parameters": {
         "content": "## Valida si el .pdf enviado es un mapa o no",
         "height": 1060,
-        "width": 600
+        "width": 600,
+        "color": 6
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -40,
-        -80
+        1000,
+        1260
       ],
-      "id": "a9381ef2-78c1-4019-876b-2c8905bc87b8",
+      "id": "b38c13a8-afa9-4719-9207-00aafe54078a",
       "name": "Sticky Note"
     },
     {
       "parameters": {
         "content": "## Vanex Activities",
-        "height": 560,
-        "width": 1640,
-        "color": 7
+        "height": 640,
+        "width": 1640
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        180,
-        60
+        1780,
+        1240
       ],
-      "id": "0d8519b5-7852-47a7-abd0-93da7c96caf4",
+      "id": "57b01499-fb97-4319-bac1-760f8c6500a7",
       "name": "Sticky Note1"
     },
     {
@@ -362,10 +333,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        780,
-        720
+        2000,
+        2120
       ],
-      "id": "fa3a99c3-0e23-409e-aa95-30a9742bd372",
+      "id": "ba7d4214-620d-4378-b295-1cf3c52421bd",
       "name": "Opportunitex"
     },
     {
@@ -378,10 +349,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        520,
-        620
+        1740,
+        2020
       ],
-      "id": "6d8c261b-ffbd-4eae-91ec-98c08c1f6555",
+      "id": "0b8d2262-8fc1-46af-b658-0ef0a9d5d412",
       "name": "Sticky Note2"
     },
     {
@@ -406,10 +377,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        720,
-        180
+        2080,
+        1440
       ],
-      "id": "ebf76bb9-5d6f-4d71-b2b1-2c87091414e4",
+      "id": "9aa9501e-42d0-47ec-a6a8-f0cb1aa647a7",
       "name": "Reasignación"
     },
     {
@@ -419,10 +390,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        580,
-        720
+        1820,
+        2120
       ],
-      "id": "536ecd6e-2108-4ff6-bddd-637270efae1b",
+      "id": "febf0c94-76f3-4b6c-9bd1-8e3c87663dba",
       "name": "Opportunitex JSON"
     },
     {
@@ -453,37 +424,11 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        140,
-        780
+        1140,
+        2120
       ],
-      "id": "f73c0cac-5ae5-47c1-a556-1e3ffeeba873",
+      "id": "20fbce34-d0b7-4c7e-9a49-8273c54f186d",
       "name": "It's not an mapa"
-    },
-    {
-      "parameters": {
-        "jsCode": "const output = $json[\"stdout\"];\n\ntry {\n  const result = JSON.parse(output);\n  return [{ json: result }];\n} catch (e) {\n  return [{\n    json: {\n      error: \"Falha ao fazer parse do stdout\",\n      rawOutput: output\n    }\n  }];\n}"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -1260,
-        -700
-      ],
-      "id": "53b35268-cae5-4728-91db-4cf8833d0721",
-      "name": "Code"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.4,
-      "position": [
-        -860,
-        -660
-      ],
-      "id": "7dba69c6-548c-47ed-b40f-47fb9134ea81",
-      "name": "Respond to Webhook"
     },
     {
       "parameters": {
@@ -496,7 +441,7 @@
             {
               "parameterType": "formBinaryData",
               "name": "mdr",
-              "inputDataFieldName": "mdr"
+              "inputDataFieldName": "file"
             }
           ]
         },
@@ -505,24 +450,163 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -560,
-        440
+        -740,
+        1120
       ],
-      "id": "9e35c16a-377d-4a53-871e-2643f0b59cb6",
+      "id": "0356325c-bcbd-4661-a426-22efb247b381",
       "name": "Perfilamento"
     },
     {
       "parameters": {
-        "jsCode": "// Mapeamento normalizado das instituições\nconst mapping = {\n  \"orthogon\": \"Orthogon\",\n  \"revolut\": \"Revolut Bank\",\n  \"volkswagen\": \"Volkswagen Bank GMBH\",\n  \"raize\": \"Raize\",\n  \"sfs\": \"SFS - Financial Services\",\n  \"monese\": \"Monese\",\n  \"cofidis\": \"Cofidis\",\n  \"unicre\": \"Unicre\",\n  \"novoatlantico\": \"Novo Atlântico\",\n  \"atlanticoeuropa\": \"Banco Atlantico Europa\",\n  \"big\": \"Banco de Investimento Global\",\n  \"best\": \"Banco Best\",\n  \"ctt\": \"Banco CTT\",\n  \"credibom\": \"Credibom\",\n  \"activobank\": \"ActivoBank\",\n  \"bancomontepio\": \"Banco Montepio\",\n  \"bankinter\": \"Bankinter\",\n  \"bnpparibas\": \"BNP Paribas\",\n  \"bni\": \"BNI Europa\",\n  \"bps\": \"Banco Português de Gestão\",\n  \"bic\": \"Banco BIC\",\n  \"bbva\": \"BBVA\",\n  \"bnp\": \"BNP Paribas\",\n  \"bnpcreditopessoal\": \"BNP Crédito Pessoal\",\n  \"cgd\": \"Caixa Geral de Depósitos\",\n  \"cetelem\": \"Cetelem\",\n  \"cmc\": \"CMC Markets\",\n  \"créditoagricola\": \"Crédito Agrícola\",\n  \"deutschebank\": \"Deutsche Bank\",\n  \"ebankit\": \"ebankIT\",\n  \"eurobic\": \"EuroBic\",\n  \"eurobank\": \"Eurobank\",\n  \"finibanco\": \"Finibanco\",\n  \"finantia\": \"Banco Finantia\",\n  \"grupoageas\": \"Grupo Ageas\",\n  \"grupoocidental\": \"Grupo Ocidental\",\n  \"ing\": \"ING\",\n  \"jpmorgan\": \"JP Morgan\",\n  \"kuanto\": \"KuantoKusta\",\n  \"lendon\": \"Lendon.pt\",\n  \"millennium\": \"Millennium BCP\",\n  \"moneybox\": \"MoneyBox\",\n  \"monzo\": \"Monzo\",\n  \"morganstanley\": \"Morgan Stanley\",\n  \"mymoney\": \"MyMoney\",\n  \"n26\": \"N26\",\n  \"nb\": \"NOVO BANCO\",\n  \"novobanco\": \"NOVO BANCO\",\n  \"oportocredito\": \"Oporto Crédito\",\n  \"opcredit\": \"OP Credit\",\n  \"paypal\": \"PayPal\",\n  \"pepper\": \"Pepper\",\n  \"payshop\": \"Payshop\",\n  \"plataformafinanceira\": \"Plataforma Financeira\",\n  \"pluribank\": \"Pluribank\",\n  \"popular\": \"Banco Popular\",\n  \"prestamer\": \"Prestamer\",\n  \"raiffeisen\": \"Raiffeisen Bank\",\n  \"santander\": \"Banco Santander Totta\",\n  \"seculo\": \"Banco Século\",\n  \"simplic\": \"Simplic\",\n  \"sofi\": \"Sofi\",\n  \"solidario\": \"Banco Solidário\",\n  \"sofisa\": \"Banco Sofisa\",\n  \"transferwise\": \"Wise (ex TransferWise)\",\n  \"unicredit\": \"Unicredit\",\n  \"viabuy\": \"Viabuy\",\n  \"wizink\": \"Wizink Bank\",\n  \"abanca\": \"Abanca\",\n  \"openbank\": \"Openbank\",\n  \"banif\": \"Banif\",\n  \"barclays\": \"Barclays\",\n  \"bancoinvest\": \"Banco Invest\",\n  \"bestbank\": \"Best Bank\",\n  \"bmce\": \"BMCE Bank\",\n  \"bancomillennium\": \"Banco Millennium\",\n  \"bancomontepiogeral\": \"Banco Montepio Geral\",\n  \"bancomontepiocrédito\": \"Banco Montepio Crédito\",\n  \"bancomontepiocomercial\": \"Banco Montepio Comercial\",\n  \"novobanco2\": \"NOVO BANCO\",\n  \"novobancocrédito\": \"NOVO BANCO Crédito\",\n  \"banconacional\": \"Banco Nacional Ultramarino\",\n  \"banconif\": \"Banco NIF\",\n  \"bancomontepiopoupança\": \"Banco Montepio Poupança\",\n};\n\nconst unidecode = (str) => str.normalize(\"NFD\").replace(/[\\u0300-\\u036f]/g, \"\");\n\nreturn items.map(item => {\n  const output = [];\n  const registros = item.json.info_institutions;\n\n  for (const reg of registros) {\n    const original = reg.instituicao || '';\n    const normalizado = unidecode(original.toLowerCase().replace(/[\\s\\-]/g, \"\"));\n    const nomePadrao = mapping[normalizado] || original;\n    output.push({ ...reg, instituicao_formatada: nomePadrao });\n  }\n\n  return {\n    json: {\n      ...item.json,\n      info_institutions: output\n    }\n  };\n});"
+        "jsCode": "// Mapeamento normalizado das instituições\nconst mapping = {\n  \"bancocomercialportugues\": \"Banco Comercial Português\",\n  \"orthogon\": \"Orthogon\",\n  \"revolut\": \"Revolut Bank\",\n  \"volkswagen\": \"Volkswagen Bank GMBH\",\n  \"raize\": \"Raize\",\n  \"sfs\": \"SFS - Financial Services\",\n  \"monese\": \"Monese\",\n  \"cofidis\": \"Cofidis\",\n  \"unicre\": \"Unicre\",\n  \"novoatlantico\": \"Novo Atlântico\",\n  \"atlanticoeuropa\": \"Banco Atlantico Europa\",\n  \"big\": \"Banco de Investimento Global\",\n  \"best\": \"Banco Best\",\n  \"ctt\": \"Banco CTT\",\n  \"credibom\": \"Credibom\",\n  \"activobank\": \"ActivoBank\",\n  \"bancomontepio\": \"Banco Montepio\",\n  \"bankinter\": \"Bankinter\",\n  \"bnpparibas\": \"BNP Paribas\",\n  \"bni\": \"BNI Europa\",\n  \"bps\": \"Banco Português de Gestão\",\n  \"bic\": \"Banco BIC\",\n  \"bbva\": \"BBVA\",\n  \"bnp\": \"BNP Paribas\",\n  \"bnpcreditopessoal\": \"BNP Crédito Pessoal\",\n  \"cgd\": \"Caixa Geral de Depósitos\",\n  \"cetelem\": \"Cetelem\",\n  \"cmc\": \"CMC Markets\",\n  \"créditoagricola\": \"Crédito Agrícola\",\n  \"deutschebank\": \"Deutsche Bank\",\n  \"ebankit\": \"ebankIT\",\n  \"eurobic\": \"EuroBic\",\n  \"eurobank\": \"Eurobank\",\n  \"finibanco\": \"Finibanco\",\n  \"finantia\": \"Banco Finantia\",\n  \"grupoageas\": \"Grupo Ageas\",\n  \"grupoocidental\": \"Grupo Ocidental\",\n  \"ing\": \"ING\",\n  \"jpmorgan\": \"JP Morgan\",\n  \"kuanto\": \"KuantoKusta\",\n  \"lendon\": \"Lendon.pt\",\n  \"millennium\": \"Millennium BCP\",\n  \"moneybox\": \"MoneyBox\",\n  \"bpisa\": \"Banco BPI\",\n  \"monzo\": \"Monzo\",\n  \"morganstanley\": \"Morgan Stanley\",\n  \"mymoney\": \"MyMoney\",\n  \"n26\": \"N26\",\n  \"nb\": \"NOVO BANCO\",\n  \"novobanco\": \"NOVO BANCO\",\n  \"oportocredito\": \"Oporto Crédito\",\n  \"opcredit\": \"OP Credit\",\n  \"paypal\": \"PayPal\",\n  \"pepper\": \"Pepper\",\n  \"payshop\": \"Payshop\",\n  \"plataformafinanceira\": \"Plataforma Financeira\",\n  \"pluribank\": \"Pluribank\",\n  \"popular\": \"Banco Popular\",\n  \"prestamer\": \"Prestamer\",\n  \"raiffeisen\": \"Raiffeisen Bank\",\n  \"santander\": \"Banco Santander Totta\",\n  \"seculo\": \"Banco Século\",\n  \"simplic\": \"Simplic\",\n  \"sofi\": \"Sofi\",\n  \"solidario\": \"Banco Solidário\",\n  \"sofisa\": \"Banco Sofisa\",\n  \"transferwise\": \"Wise (ex TransferWise)\",\n  \"unicredit\": \"Unicredit\",\n  \"viabuy\": \"Viabuy\",\n  \"wizink\": \"Wizink Bank\",\n  \"abanca\": \"Abanca\",\n  \"openbank\": \"Openbank\",\n  \"banif\": \"Banif\",\n  \"barclays\": \"Barclays\",\n  \"bancoinvest\": \"Banco Invest\",\n  \"bestbank\": \"Best Bank\",\n  \"bmce\": \"BMCE Bank\",\n  \"bancomillennium\": \"Banco Millennium\",\n  \"bancomontepiogeral\": \"Banco Montepio Geral\",\n  \"bancomontepiocrédito\": \"Banco Montepio Crédito\",\n  \"bancomontepiocomercial\": \"Banco Montepio Comercial\",\n  \"novobanco2\": \"NOVO BANCO\",\n  \"novobancocrédito\": \"NOVO BANCO Crédito\",\n  \"banconacional\": \"Banco Nacional Ultramarino\",\n  \"banconif\": \"Banco NIF\",\n  \"bancomontepiopoupança\": \"Banco Montepio Poupança\"\n};\n\nconst unidecode = (str) => str.normalize(\"NFD\").replace(/[\\u0300-\\u036f]/g, \"\");\n\nreturn items.map(item => {\n  const registros = item.json.info_institutions || [];\n  const output = [];\n\n  for (const reg of registros) {\n    const original = reg.instituicao || \"\";\n    const clean = unidecode(original.toLowerCase().replace(/[^a-z0-9]/g, \"\")); // remove tudo que não é letra/número\n\n    let nomePadrao = original;\n\n    for (const chave in mapping) {\n      if (clean.includes(chave)) {\n        nomePadrao = mapping[chave];\n        break;\n      }\n    }\n\n    output.push({\n      ...reg,\n      instituicao_formatada: nomePadrao\n    });\n  }\n\n  return {\n    json: {\n      ...item.json,\n      info_institutions: output\n    }\n  };\n});"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -240,
-        440
+        -260,
+        1120
       ],
-      "id": "4fea7a98-7433-4908-85e5-837cbb22823f",
+      "id": "90da601d-87c7-41d6-9f81-492acd390706",
       "name": "Standard_instituiciones"
+    },
+    {
+      "parameters": {
+        "content": "Padroniza las informaciones como en vanex",
+        "height": 1080,
+        "width": 380,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -300,
+        620
+      ],
+      "id": "fed8128a-a81b-430b-9bb5-662d000f6b29",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "Senna 🔥",
+        "height": 540,
+        "width": 440,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -900,
+        900
+      ],
+      "id": "8e9a8732-6f97-4eff-b296-5d650f9b62e0",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const mapProdutos = {\n  \"creditorenovavellinhadecredito\": \"Empréstimo bancário\",\n  \"cartaodecreditosemperiododefreefloat\": \"Cartão de crédito\",\n  \"creditoautomovelexcluindolocacoesfinanceiras\": \"Empréstimo bancário\",\n  \"creditopessoal\": \"Empréstimo bancário\",\n  \"cartaodecreditocomperiododefreefloat\": \"Cartão de crédito\",\n  \"ultrapassagensdecredito\": \"Cartão de crédito\",\n  \"cartaodecredito\": \"Cartão de crédito\",\n  \"locacaofinanceiramobiliaria\": \"Empréstimo bancário\",\n  \"creditoconexo\": \"Empréstimo bancário\",\n  \"outroscreditos\": \"Empréstimo bancário\",\n  \"cartaodecreditocartaodedebitodiferido\": \"Cartão de crédito\",\n  \"creditonaorenovavel\": \"Empréstimo bancário\",\n  \"creditorenovavelcontacorrentebancaria\": \"Empréstimo bancário\",\n  \"facilidadesdedescoberto\": \"Empréstimo bancário\",\n  \"financiamentoaatividadeempresarial\": \"Empréstimo bancário\",\n  \"locacaofinanceiraimobiliaria\": \"Empréstimo bancário\",\n  \"outrosavalesegarantiasbancariasprestadas\": \"Empréstimo bancário\",\n  \"descontoeoutroscreditostituladosporefeitos\": \"Empréstimo bancário\",\n  \"factoring\": \"Empréstimo bancário\",\n  \"creditoahabitacao\": \"Empréstimo bancário\"\n};\n\nconst unidecode = (str) => str.normalize(\"NFD\").replace(/[\\u0300-\\u036f]/g, \"\");\n\nconst formatarProduto = (raw) => {\n  if (!raw) return raw;\n  const normalizado = unidecode(raw.toLowerCase().replace(/[\\s\\-]/g, \"\"));\n  return mapProdutos[normalizado] || raw;\n};\n\nreturn items.map(item => {\n  const dado = item.json;\n\n  // Se tiver múltiplas instituições:\n  if (Array.isArray(dado.info_institutions)) {\n    dado.info_institutions = dado.info_institutions.map(inst => {\n      inst.produto_formatado = formatarProduto(inst.prodfinanceiro);\n      return inst;\n    });\n  }\n\n  return { json: dado };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -60,
+        1120
+      ],
+      "id": "a9c705e2-1c64-4ae8-9f93-5b1e0f79dbf5",
+      "name": "standard_credit_type"
+    },
+    {
+      "parameters": {
+        "content": "valida si el mapa esta actualizado\n",
+        "height": 1080,
+        "width": 380,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        160,
+        620
+      ],
+      "id": "57371fa8-5707-4f35-a337-7d2158a8bf13",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "jsCode": "const meses = {\n  \"janeiro\": 1, \"fevereiro\": 2, \"marco\": 3, \"abril\": 4, \"maio\": 5, \"junho\": 6,\n  \"julho\": 7, \"agosto\": 8, \"setembro\": 9, \"outubro\": 10, \"novembro\": 11, \"dezembro\": 12\n};\n\nconst now = new Date();\nconst currentMonth = now.getMonth() + 1;\nconst currentYear = now.getFullYear();\n\nreturn items.map(item => {\n  const mesmapaStr = (item.json.mesmapa || \"\").toLowerCase().replace(\"de\", \"\");\n  let caducado = true;\n\n  for (const [mesNome, mesNumero] of Object.entries(meses)) {\n    if (mesmapaStr.includes(mesNome)) {\n      const ano = parseInt(mesmapaStr.replace(/\\D/g, '').slice(-4));\n      if (!isNaN(ano)) {\n        const diffMeses = (currentYear - ano) * 12 + (currentMonth - mesNumero);\n        caducado = diffMeses > 2;  // ⬅️ Mapa com mais de 2 meses está \"caducado\"\n      }\n      break;\n    }\n  }\n\n  return {\n    json: {\n      ...item.json,\n      caducado\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        1120
+      ],
+      "id": "ab03f003-1ef0-43ae-b82f-ddf11e893615",
+      "name": "Validar_Mapa_Caducado"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "655f627f-24c0-47af-b5f1-3de729d7d4a1",
+              "leftValue": "={{ $json.caducado }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        1120
+      ],
+      "id": "e7f51213-4d82-49a0-8113-bcbbeafb5c59",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"motivo\": \"Mapa caducado\",\n  \"status\": \"rejeitado\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1080,
+        720
+      ],
+      "id": "f4c243a1-8723-49d6-b0e7-8d13a5d083f8",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "content": "Whatsapp message para solicitar el mapa actualizado",
+        "height": 80,
+        "width": 480,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        720
+      ],
+      "id": "da872fad-845c-450d-bb0d-2f069f2072e7",
+      "name": "Sticky Note5"
     }
   ],
   "pinData": {},
@@ -557,16 +641,6 @@
             "index": 0
           }
         ]
-      ]
-    },
-    "Save in disk the MDR": {
-      "main": [
-        []
-      ]
-    },
-    "Start the Senna Project": {
-      "main": [
-        []
       ]
     },
     "Perfila": {
@@ -716,6 +790,51 @@
       "main": [
         [
           {
+            "node": "standard_credit_type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "standard_credit_type": {
+      "main": [
+        [
+          {
+            "node": "Validar_Mapa_Caducado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar_Mapa_Caducado": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "It's not an mapa",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
             "node": "It's an Mapa",
             "type": "main",
             "index": 0
@@ -727,16 +846,21 @@
           }
         ]
       ]
+    },
+    "Invalid Map": {
+      "main": [
+        []
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "c63b9813-89f0-46ed-8660-644eb974a9ae",
+  "versionId": "c11603d0-7c73-43a4-8043-c8050c068dd7",
   "meta": {
-    "instanceId": "b7aa4255579f5544c2ca21eec71de740a1c8f06d49b7f9c3091e9bd22d247c5e"
+    "instanceId": "c1ae0e1e65b452a0c96f850686134144d6ce592858e9eee514e8ab82074e5b72"
   },
-  "id": "OLWY1xLQQuqIYFTi",
+  "id": "68evG31xCn4GyAsP",
   "tags": []
 }
