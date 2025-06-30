@@ -1,0 +1,52 @@
+# Virtual environments
+venv/
+.venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos temporários
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Variáveis de ambiente
+.env
+
+# Dados sensíveis ou gerados automaticamente
+customers/
+src/customers/
+src/maps/no_perfila/
+maps/
+POC/maps/
+mpr_bajadas_eng/
+source/
+resumo_por_cliente.json
+
+# Arquivos de saída
+*.pdf
+*.csv
+*.json
+
+# Output de execução local (caso gere relatórios ou versões com timestamp)
+resultado_*.csv
+resultado_*.json
+
+# Cache de OCR ou imagens (se vier a usar futuramente)
+tmp/
+temp/
+*.png
+*.jpeg
+*.jpg
+*.tiff
+
+# IDEs e editores
+.vscode/
+.idea/
