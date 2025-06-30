@@ -58,3 +58,14 @@ temp/
 
 # Permitir arquivos JSON dos fluxos do n8n
 !senna-project/n8n-flows/*.json
+
+#ignorar logs do Gunicorn ou Flask, se gerados
+gunicorn-error.log
+gunicorn-access.log
+
+#Ignorar cache do pip (caso use no CI/CD)
+pip-wheel-metadata/
+
+#Ignorar lockfiles temporários de VS Code e Python
+*.pid
+*.lock
