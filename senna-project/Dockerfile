@@ -1,30 +1,36 @@
-# Usa imagem leve com Python 3.11
+# Usa imagem base leve com Python 3.11
 FROM python:3.11-slim
 
-# Corrige acesso aos repositórios Debian via HTTPS e instala dependências do sistema
-RUN apt-get update || true && \
-    apt-get install -y \
+# Define variável de ambiente para não gerar arquivos `.pyc`
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Instala dependências do sistema
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
         tesseract-ocr \
         tesseract-ocr-por \
         libgl1 \
-        poppler-utils && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+        poppler-utils \
+        && apt-get clean && \
+        rm -rf /var/lib/apt/lists/*
 
-# Define diretório de trabalho dentro do container
+# Define o diretório de trabalho
 WORKDIR /app
 
-# Copia todos os arquivos do projeto local para dentro do container
+# Copia os arquivos do projeto para o container
 COPY . .
 
-# Define variável de ambiente para incluir o diretório src no caminho do Python
+# Define o caminho do código-fonte como variável de ambiente
 ENV PYTHONPATH=/app/src
 
-# Atualiza pip e instala dependências Python listadas no requirements.txt
-RUN pip install --upgrade pip && pip install -r requirements.txt
+# Instala as dependências do projeto
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Cria todas as pastas necessárias no container
-RUN mkdir -p ./maps/encrypted/processed \
+# Garante que os diretórios necessários existem
+RUN mkdir -p \
+    ./maps/encrypted/processed \
     ./maps/decrypted/processed \
     ./maps/outputs/json \
     ./maps/outputs/csv \
@@ -35,5 +41,5 @@ RUN mkdir -p ./maps/encrypted/processed \
 # Expõe a porta usada pela aplicação Flask
 EXPOSE 5001
 
-# Inicia a aplicação com Gunicorn
+# Define o comando padrão de inicialização com Gunicorn
 CMD ["gunicorn", "--bind", "0.0.0.0:5001", "app:app"]

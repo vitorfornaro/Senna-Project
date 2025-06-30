@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   n8n:
-    image: n8nio/n8n:1.97.1  # ✅ Usa imagem oficial para estabilidade
+    image: n8nio/n8n:1.97.1
     ports:
       - 5678:5678
     environment:
@@ -14,15 +14,16 @@ services:
       - N8N_USER_MANAGEMENT_DISABLED=${N8N_USER_MANAGEMENT_DISABLED}
       - N8N_ADMIN_EMAIL=${N8N_ADMIN_EMAIL}
       - N8N_ADMIN_PASSWORD=${N8N_ADMIN_PASSWORD}
+      - N8N_SECURE_COOKIE=${N8N_SECURE_COOKIE}
     volumes:
-      - n8n_data:/home/node/.n8n  # ✅ Volume persistente para salvar os fluxos
+      - n8n_data:/home/node/.n8n
     networks:
       - senna_net
 
   senna_project:
     build:
-      context: ./senna-project     # ✅ Corrigido: nome da pasta com hífen
-      dockerfile: Dockerfile       # Dockerfile Python está na pasta correta
+      context: ./senna-project
+      dockerfile: Dockerfile
     container_name: senna_project
     ports:
       - "5001:5001"
