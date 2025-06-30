@@ -8,8 +8,8 @@ services:
     environment:
       - N8N_DEPLOYMENT_TYPE=production
       - N8N_DIAGNOSTICS_ENABLED=false
-      - N8N_HOST=localhost
-      - WEBHOOK_URL=http://localhost:5678
+      - N8N_HOST=192.168.102.125  # ✅ IP da máquina real para que o webhook funcione fora do container
+      - WEBHOOK_URL=http://192.168.102.125:5678  # ✅ URL externa real para chamadas webhook funcionarem
       - N8N_EMAIL_MODE=smtp
       - N8N_USER_MANAGEMENT_DISABLED=false
       - N8N_ADMIN_EMAIL=admin@gobravo.pt
@@ -22,12 +22,12 @@ services:
   senna_project:
     build:
       context: ./senna-project     # ✅ Corrigido: nome da pasta com hífen
-      dockerfile: Dockerfile       # Certifique-se de que esse Dockerfile está dentro da pasta `senna-project`
+      dockerfile: Dockerfile       # Dockerfile Python está na pasta correta
     container_name: senna_project
     ports:
       - "5001:5001"
     volumes:
-      - ./senna-project:/app/senna_project  # ✅ Corrigido aqui também
+      - ./senna-project:/app/senna_project
       - ./maps:/app/maps
       - ./logs:/app/logs
       - ./customers:/app/customers
