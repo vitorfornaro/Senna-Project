@@ -1,6 +1,4 @@
 import pandas as pd
-import json
-
 from pdf_decryptor import PDFDecryptor
 from pdf_text_extractor import PDFTextExtractor
 from pdf_data_extractor import PDFDataExtractor
@@ -15,24 +13,27 @@ def process_pdfs():
     decryptor = PDFDecryptor()
     decrypted_pdfs = decryptor.decrypt_pdfs_with_progress()
     if not decrypted_pdfs:
-        print(json.dumps({"status": "empty", "mensagem": "Nenhum PDF para descriptografar."}))
+        print("⚠️ Nenhum PDF para descriptografar.")
         return
 
     # 📝 Extração de texto (inclui fallback OCR)
     extractor = PDFTextExtractor()
     pdfs_text = extractor.extract_text_from_pdfs()
     if not pdfs_text:
-        print(json.dumps({"status": "empty", "mensagem": "Nenhum texto extraído dos PDFs."}))
+        print("⚠️ Nenhum texto extraído dos PDFs.")
         return
 
     # 🔍 Extração de dados estruturados
     data_extractor = PDFDataExtractor()
     df = data_extractor.extract_data(pdfs_text)
     if df.empty:
-        print(json.dumps({"status": "empty", "mensagem": "Nenhum dado extraído do texto."}))
+        print("⚠️ Nenhum dado extraído do texto.")
         return
 
     print(f"📊 Total de registros extraídos: {len(df)}")
+
+    # 👤 Debug opcional por NIF (remover em produção se não quiser output)
+    # print(df[df["nif"] == "275211339"])
 
     # 🧠 Regras de perfilamento
     df = Senninha.aplicar(df)
@@ -53,16 +54,6 @@ def process_pdfs():
     output_handler.save_json_by_client(df)
 
     print("✅ Todos os arquivos foram processados e salvos com sucesso!")
-
-    # ✅ Retornar um JSON parseável para o n8n
-    try:
-        if not df.empty:
-            output_data = df.head(1).to_dict(orient="records")[0]
-            print(json.dumps(output_data, ensure_ascii=False))
-        else:
-            print(json.dumps({"status": "vazio", "mensagem": "Nenhum dado perfilado."}))
-    except Exception as e:
-        print(json.dumps({"error": "Erro ao gerar saída JSON", "details": str(e)}))
 
 if __name__ == "__main__":
     process_pdfs()

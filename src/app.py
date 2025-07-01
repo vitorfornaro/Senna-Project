@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import tempfile
 import os
 import uuid
-from unidecode import unidecode
+from unidecode import unidecode  # ⚠️ precisa estar no requirements.txt
 
 from pdf_decryptor import PDFDecryptor
 from pdf_text_extractor import PDFTextExtractor
@@ -90,13 +90,16 @@ def _mapa_invalido_response():
     })
 
 def renomear_chaves_para_snake_case(d):
+    """Normaliza chaves e valores: sem acentos, espaços ou hífens, tudo minúsculo."""
     resultado = {}
     for k, v in d.items():
         chave = unidecode(k.lower().replace(" ", "").replace("-", ""))
-        valor = unidecode(v.lower().replace(" ", "").replace("-", "")) if isinstance(v, str) else v
+        if isinstance(v, str):
+            valor = unidecode(v.lower().replace(" ", "").replace("-", ""))
+        else:
+            valor = v
         resultado[chave] = valor
     return resultado
 
 if __name__ == '__main__':
-    # ✅ ESSENCIAL: escutar em todas as interfaces para que o n8n (outro container) consiga acessar
-    app.run(host='0.0.0.0', port=5001)
+    app.run(debug=True, port=5001)

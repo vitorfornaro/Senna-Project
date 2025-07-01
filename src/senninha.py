@@ -14,56 +14,35 @@ class Senninha:
                 return float(valor_str)
             except ValueError:
                 return None
-        return valor_str
+        return valor_str  # já é float ou None
 
     @staticmethod
     def aplicar(df: pd.DataFrame) -> pd.DataFrame:
-        df = df.copy()
+        df = df.copy()  # evita modificar o DataFrame original
 
-        # Conversão segura
+        # 🔄 Conversão segura das colunas monetárias
         for col in ['divida', 'parcela', 'garantias']:
             if col in df.columns:
                 df[col] = df[col].apply(Senninha.parse_float)
             else:
-                df[col] = 0.0
+                df[col] = 0.0  # evita KeyError se coluna faltar
 
-        # === REGRA INDIVIDUAL (por linha) ===
+        # 🧠 Regras de perfilamento individual
         def regra_perfil_individual(row):
             garantia_ok = pd.isna(row['garantias']) or row['garantias'] == 0
             litigio_ok = isinstance(row['litigio'], str) and row['litigio'].replace('\xa0', '').strip().lower() == 'não'
-            produto = str(row.get('prodfinanceiro', '')).strip().lower()
-            divida = row.get('divida') or 0.0
+            return garantia_ok and litigio_ok
 
-            # ❌ Nunca perfilar crédito à habitação
-            if 'habitação' in produto or 'habitacao' in produto:
-                return False
+        df['perfil_individual'] = df.apply(regra_perfil_individual, axis=1)
 
-            # ⚠️ Crédito automóvel exige dívida mínima e sem garantia
-            if 'automóvel' in produto or 'automovel' in produto:
-                if not garantia_ok:
-                    return False
-                return litigio_ok and divida >= 10000
+        # 💰 Soma das dívidas perfiláveis
+        soma = df[df['perfil_individual']]['divida'].sum()
+        grupo_perfila = soma >= 6000
 
-            # ✅ Regra padrão
-            return garantia_ok and litigio_ok and divida > 0
+        df['perfila'] = df['perfil_individual'] & grupo_perfila
 
-        df.loc[:, 'perfil_individual'] = df.apply(regra_perfil_individual, axis=1)
-
-        # === REGRA DE GRUPO ===
-        df['perfila'] = False  # zera tudo inicialmente
-
-        for instituicao, grupo in df.groupby("instituicao"):
-            tem_garantia = (grupo.get('garantias') > 0).any()
-            tem_habitacao = grupo['prodfinanceiro'].astype(str).str.lower().str.contains("habitacao|habitação").any()
-
-            if not tem_garantia and not tem_habitacao:
-                indices = grupo[grupo['perfil_individual']].index
-                df.loc[indices, 'perfila'] = True
-
-        # Padronização segura de tipos (opcional)
-        df['perfil_individual'] = df['perfil_individual'].fillna(False)
-        df['perfila'] = df['perfila'].fillna(False)
-        df['divida'] = df['divida'].fillna(0.0)
+        print(f"\n💰 Soma das dívidas elegíveis: € {soma:,.2f}")
+        print(f"🧾 Resultado final: {'✅ PERFILA' if grupo_perfila else '❌ NÃO PERFILA'}")
 
         return df
 
@@ -83,7 +62,7 @@ class Senninha:
             if not nif:
                 continue
 
-            dividas_elegiveis = grupo[grupo['perfila']]
+            dividas_elegiveis = grupo[grupo['perfil_individual'] == True]
             total_elegivel = dividas_elegiveis['divida'].sum()
             perfila = total_elegivel >= 6000
 

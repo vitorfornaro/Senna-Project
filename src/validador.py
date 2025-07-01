@@ -3,11 +3,11 @@ import json
 import numpy as np
 from config import Config
 
-# Diretório onde os reprovados são salvos
+# Pastas de saída
 NO_PERFILA_DIR = os.path.join(Config.MAPS_DIR, "no_perfila")
 os.makedirs(NO_PERFILA_DIR, exist_ok=True)
 
-# 🔄 Conversor robusto para serialização JSON
+# Conversor robusto
 def _converter_json(obj):
     if isinstance(obj, (np.bool_, bool)):
         return bool(obj)
@@ -32,12 +32,9 @@ def salvar_nao_perfilar(df):
         for _, row in grupo.iterrows():
             motivos = []
 
-            litigio_str = str(row.get("litigio", "")).strip().lower()
-            garantias_val = float(row.get("garantias") or 0)
-
-            if litigio_str == "sim":
+            if str(row["litigio"]).strip().lower() == "sim":
                 motivos.append("Litígio judicial")
-            if garantias_val > 0:
+            if float(row.get("garantias") or 0) > 0:
                 motivos.append("Dívida com garantia")
 
             outras = grupo[
@@ -50,8 +47,8 @@ def salvar_nao_perfilar(df):
                 motivos.append("Instituição tem outra dívida com garantia/litigio")
 
             dividas_com_motivos.append({
-                "instituicao": row.get("instituicao", "desconhecida"),
-                "valor": float(row.get("divida") or 0),
+                "instituicao": row["instituicao"],
+                "valor": float(row["divida"]),
                 "motivos_reprovacao": list(set(motivos)) or ["Regras de perfilamento não atendidas"]
             })
 
