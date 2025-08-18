@@ -8,7 +8,6 @@ LOG_FOLDER = "./logs"
 os.makedirs(LOG_FOLDER, exist_ok=True)
 LOG_FILE = os.path.join(LOG_FOLDER, "erros_processamento.txt")
 
-# Função para limpar e padronizar texto
 def limpar_nome(texto):
     if pd.isna(texto):
         return ""
@@ -17,11 +16,9 @@ def limpar_nome(texto):
     texto = texto.replace(",", "").replace(".", "").strip()
     return texto
 
-# Carrega o CSV de mapeamento
 caminho_csv = os.path.join(os.path.dirname(__file__), "bancos_padrao.csv")
 df_map = pd.read_csv(caminho_csv)
 
-# Função para normalizar nome da instituição
 def normalizar_nome_banco(nome_extraido):
     nome_limpo = limpar_nome(nome_extraido)
     for _, row in df_map.iterrows():
@@ -29,6 +26,21 @@ def normalizar_nome_banco(nome_extraido):
         if chave in nome_limpo:
             return row['name']
     return nome_extraido
+
+def tem_garantia(sub_bloco):
+    """
+    Se houver QUALQUER valor diferente de '-' entre 'Número' e 'Garantias', considera-se garantia presente.
+    """
+    try:
+        padrao = r"Número\s*\n?(.*?)\n?Garantias"
+        match = re.search(padrao, sub_bloco, re.DOTALL | re.IGNORECASE)
+        if match:
+            entre = match.group(1).strip()
+            if entre and entre != "-" and not re.fullmatch(r"[-\s]*", entre):
+                return 1.0
+        return 0.0
+    except:
+        return 0.0
 
 class PDFDataExtractor:
     def __init__(self):
@@ -49,7 +61,6 @@ class PDFDataExtractor:
             'divida_fallback': re.compile(r'Total em dívida.*?([\d\s,.]+)\s*€', re.DOTALL),
             'litigio': re.compile(r'Em litígio judicial\s+(Sim|Não)', re.IGNORECASE),
             'parcela': re.compile(r'Abatido ao ativo.*?([\d\s,.]+)\s*€'),
-            'garantias': re.compile(r"Valor\s+[\d\s.,]+\s+([\d\s.,]+)\s*€", re.DOTALL),
             'numdevedores': re.compile(r"Nº devedores no contrato\s+(\d+)"),
             'prodfinanceiro': re.compile(r"Produto financeiro\s+(.+?)\s+Tipo de responsabilidade", re.DOTALL),
             'datinicio': re.compile(r"Início\s+(\d{4}-\d{2}-\d{2})"),
@@ -107,8 +118,7 @@ class PDFDataExtractor:
                                 'nif': nif,
                                 'mesmapa': mesmapa.lower() if mesmapa else None,
                                 'anomapa': anomapa,
-                                #'instituicao': normalizar_nome_banco(nome_inst).lower(),
-                                'instituicao': nome_inst.lower()  # Deixa a instituição original, sem padronizar
+                                'instituicao': nome_inst.lower()
                             }
 
                             for key, regex in self.item_regexes.items():
@@ -125,7 +135,7 @@ class PDFDataExtractor:
                                 if valor:
                                     valor = valor.replace("\xa0", "").replace(" ", "")
 
-                                if key in ['divida', 'parcela', 'garantias']:
+                                if key in ['divida', 'parcela']:
                                     row[key] = self._sanitize_numeric(valor)
                                 elif key == 'numdevedores':
                                     try:
@@ -135,6 +145,7 @@ class PDFDataExtractor:
                                 else:
                                     row[key] = valor
 
+                            row['garantias'] = tem_garantia(sub_bloco)
                             data.append(row)
 
                 except Exception as e:

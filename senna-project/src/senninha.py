@@ -20,50 +20,45 @@ class Senninha:
     def aplicar(df: pd.DataFrame) -> pd.DataFrame:
         df = df.copy()
 
-        # Conversão segura
+        # Conversão robusta
         for col in ['divida', 'parcela', 'garantias']:
-            if col in df.columns:
-                df[col] = df[col].apply(Senninha.parse_float)
-            else:
-                df[col] = 0.0
+            df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0.0)
 
         # === REGRA INDIVIDUAL (por linha) ===
         def regra_perfil_individual(row):
-            garantia_ok = pd.isna(row['garantias']) or row['garantias'] == 0
-            litigio_ok = isinstance(row['litigio'], str) and row['litigio'].replace('\xa0', '').strip().lower() == 'não'
+            print('🔍 Garantia original:', row['garantias'])  # Debug
+
+            garantia_ok = row['garantias'] == 0.0
+            litigio_ok = isinstance(row['litigio'], str) and row['litigio'].replace('\xa0', '').strip().lower() in ('não', 'nao')
             produto = str(row.get('prodfinanceiro', '')).strip().lower()
             divida = row.get('divida') or 0.0
 
-            # ❌ Nunca perfilar crédito à habitação
             if 'habitação' in produto or 'habitacao' in produto:
                 return False
 
-            # ⚠️ Crédito automóvel exige dívida mínima e sem garantia
             if 'automóvel' in produto or 'automovel' in produto:
                 if not garantia_ok:
                     return False
                 return litigio_ok and divida >= 10000
 
-            # ✅ Regra padrão
             return garantia_ok and litigio_ok and divida > 0
 
-        df.loc[:, 'perfil_individual'] = df.apply(regra_perfil_individual, axis=1)
+        df['perfil_individual'] = df.apply(regra_perfil_individual, axis=1)
 
         # === REGRA DE GRUPO ===
-        df['perfila'] = False  # zera tudo inicialmente
+        df['perfila'] = False
 
         for instituicao, grupo in df.groupby("instituicao"):
-            tem_garantia = (grupo.get('garantias') > 0).any()
+            tem_garantia = (grupo['garantias'] > 0).any()
             tem_habitacao = grupo['prodfinanceiro'].astype(str).str.lower().str.contains("habitacao|habitação").any()
 
             if not tem_garantia and not tem_habitacao:
                 indices = grupo[grupo['perfil_individual']].index
                 df.loc[indices, 'perfila'] = True
 
-        # Padronização segura de tipos (opcional)
         df['perfil_individual'] = df['perfil_individual'].fillna(False)
         df['perfila'] = df['perfila'].fillna(False)
-        df['divida'] = df['divida'].fillna(0.0)
+        df['divida'] = pd.to_numeric(df['divida'], errors='coerce').fillna(0.0)
 
         return df
 
