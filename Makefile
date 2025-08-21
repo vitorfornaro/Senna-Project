@@ -7,7 +7,10 @@ start:
 	$(PYTHON) $(SRC)/main.py
 
 dev:
-	$(PYTHON) $(SRC)/app.py
+	$(PYTHON) $(SRC)/api/app.py
+
+streamlit:
+	streamlit run app_streamlit.py
 
 test:
 	pytest -v
