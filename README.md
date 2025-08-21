@@ -85,6 +85,13 @@ make api
 # or directly:
 python senna-project/src/api/app.py
  ```
+ 🔹 Run Streamlit
+```bash
+make streamlit
+# or directly:
+streamlit run app_streamlit.py
+ ```
+
 API will be available at:
 ```bash
 http://localhost:5001/perfilamento
