@@ -73,14 +73,20 @@ class PDFOutputHandler:
             dividas = group.to_dict(orient="records")
             dividas = json.loads(json.dumps(dividas, default=_converter_json))
 
+            # ✅ Total de dívidas elegíveis
             total_elegivel = sum(item["divida"] for item in dividas if item.get("perfil_individual"))
             perfila = total_elegivel >= 6000
 
+            # ✅ Novo: checa se alguma dívida tem pari_persi = True
+            pari_persi_cliente = any(item.get("pari_persi") for item in dividas)
+
+            # ✅ Monta o JSON final
             json_data = {
                 "resumo": {
-                    "nif": nif,
+                    "nif": str(nif),
                     "divida_total_elegivel": round(total_elegivel, 2),
-                    "perfila": bool(perfila)
+                    "perfila": bool(perfila),
+                    "pari_persi": bool(pari_persi_cliente)
                 },
                 "dividas": dividas
             }
@@ -90,7 +96,7 @@ class PDFOutputHandler:
                 # ✅ Conversão total antes de salvar
                 serializable_data = json.loads(json.dumps(json_data, default=_converter_json))
 
-                # DEBUG opcional (pode comentar se não quiser imprimir)
+                # DEBUG opcional
                 print(f"🧪 Salvando JSON de cliente {nif}")
                 print(json.dumps(serializable_data, indent=2))
 
