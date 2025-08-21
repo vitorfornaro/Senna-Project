@@ -4,10 +4,11 @@ import os
 import uuid
 from unidecode import unidecode
 
-from pdf_decryptor import PDFDecryptor
-from pdf_text_extractor import PDFTextExtractor
-from pdf_data_extractor import PDFDataExtractor
-from senninha import Senninha
+# ✅ imports ajustados para a nova estrutura
+from services.pdf_decryptor import PDFDecryptor
+from services.pdf_text_extractor import PDFTextExtractor
+from services.pdf_data_extractor import PDFDataExtractor
+from services.senninha import Senninha
 
 app = Flask(__name__)
 
@@ -25,6 +26,7 @@ def perfilamento():
     print(f"📎 PDF salvo temporariamente como: {temp_input}")
     arquivo.save(temp_input)
 
+    decrypted_path = None
     try:
         print("🔐 Descriptografando PDF...")
         decryptor = PDFDecryptor()
@@ -34,8 +36,10 @@ def perfilamento():
             return _mapa_invalido_response()
 
         print(f"📄 Extraindo texto de: {decrypted_path}")
-        extractor = PDFTextExtractor(input_folder=os.path.dirname(decrypted_path),
-                                     processed_folder=os.path.dirname(decrypted_path))
+        extractor = PDFTextExtractor(
+            input_folder=os.path.dirname(decrypted_path),
+            processed_folder=os.path.dirname(decrypted_path)
+        )
         textos = extractor.extract_text_from_pdfs([decrypted_path])
         if not textos:
             print("❌ Nenhum texto foi extraído.")
@@ -64,7 +68,7 @@ def perfilamento():
         return jsonify({
             "nome": unidecode(nome.lower().replace(" ", "")) if nome else None,
             "nif": nif,
-            "perfila": perfila,
+            "perfila": bool(perfila),
             "valid_map": True,
             "info_institutions": info_snake
         })
@@ -74,10 +78,17 @@ def perfilamento():
         return _mapa_invalido_response()
 
     finally:
-        if os.path.exists(temp_input):
-            os.remove(temp_input)
-        if 'decrypted_path' in locals() and decrypted_path and os.path.exists(decrypted_path):
-            os.remove(decrypted_path)
+        # limpeza de temporários
+        try:
+            if os.path.exists(temp_input):
+                os.remove(temp_input)
+        except Exception:
+            pass
+        try:
+            if decrypted_path and os.path.exists(decrypted_path):
+                os.remove(decrypted_path)
+        except Exception:
+            pass
 
 def _mapa_invalido_response():
     print("⚠️ Resposta gerada: Mapa inválido")
@@ -89,14 +100,18 @@ def _mapa_invalido_response():
         "info_institutions": []
     })
 
-def renomear_chaves_para_snake_case(d):
+def renomear_chaves_para_snake_case(d: dict) -> dict:
+    """normaliza chaves e strings: minúsculas, sem acentos, sem espaços/hífens."""
     resultado = {}
     for k, v in d.items():
-        chave = unidecode(k.lower().replace(" ", "").replace("-", ""))
-        valor = unidecode(v.lower().replace(" ", "").replace("-", "")) if isinstance(v, str) else v
+        chave = unidecode(str(k).lower().replace(" ", "").replace("-", ""))
+        if isinstance(v, str):
+            valor = unidecode(v.lower().replace(" ", "").replace("-", ""))
+        else:
+            valor = v
         resultado[chave] = valor
     return resultado
 
 if __name__ == '__main__':
-    # ✅ ESSENCIAL: escutar em todas as interfaces para que o n8n (outro container) consiga acessar
+    # ✅ escutar em todas as interfaces para que o n8n (outro container) consiga acessar
     app.run(host='0.0.0.0', port=5001)
