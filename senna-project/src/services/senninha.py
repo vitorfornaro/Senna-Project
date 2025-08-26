@@ -66,43 +66,11 @@ class Senninha:
     def aplicar(df: pd.DataFrame) -> pd.DataFrame:
         df = df.copy()
 
-        # Conversão robusta
+        # -------- Conversões robustas --------
         for col in ['divida', 'parcela', 'garantias']:
             df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0.0)
 
-        # === REGRA INDIVIDUAL (por linha) ===
-        def regra_perfil_individual(row):
-            garantia_ok = row['garantias'] == 0.0
-            litigio_ok = isinstance(row['litigio'], str) and row['litigio'].replace('\xa0', '').strip().lower() in ('não', 'nao')
-            produto = str(row.get('prodfinanceiro', '')).strip().lower()
-            divida = row.get('divida') or 0.0
-
-            if 'habitação' in produto or 'habitacao' in produto:
-                return False
-
-            if 'automóvel' in produto or 'automovel' in produto:
-                if not garantia_ok:
-                    return False
-                return litigio_ok and divida >= 10000
-
-            return garantia_ok and litigio_ok and divida > 0
-
-        df['perfil_individual'] = df.apply(regra_perfil_individual, axis=1)
-
-        # === PERFILA (lógica existente por instituição) ===
-        df['perfila'] = False
-        for instituicao, grupo in df.groupby("instituicao"):
-            tem_garantia = (grupo['garantias'] > 0).any()
-            tem_habitacao = grupo['prodfinanceiro'].astype(str).str.lower().str.contains("habitacao|habitação").any()
-            if not tem_garantia and not tem_habitacao:
-                indices = grupo[grupo['perfil_individual']].index
-                df.loc[indices, 'perfila'] = True
-
-        # === PARI/PERSI UNIFICADO (pari_persi) ===
-        # 1) banco canônico por linha
-        df['bank_canon'] = df['instituicao'].astype(str).apply(lambda s: Senninha.normalize_bank_name(s))
-
-        # 2) identificador do MAPA (prioriza o arquivo; senão mes+ano; senão NIF)
+        # -------- Identificador do MAPA (precisa existir antes de perfila por grupo) --------
         def build_map_id(row):
             arquivo = row.get('arquivopdf')
             if arquivo and str(arquivo).strip():
@@ -116,7 +84,70 @@ class Senninha:
 
         df['map_id'] = df.apply(build_map_id, axis=1)
 
-        # 3) soma apenas dívidas > 0 dentro do mesmo NIF + MAPA + BANCO
+        # -------- REGRA INDIVIDUAL (por linha) --------
+        def regra_perfil_individual(row):
+            garantia_ok = row['garantias'] == 0.0
+            litigio_ok = isinstance(row['litigio'], str) and row['litigio'].replace('\xa0', '').strip().lower() in ('não', 'nao')
+            produto = str(row.get('prodfinanceiro', '')).strip().lower()
+            divida = row.get('divida') or 0.0
+
+            # habitação nunca perfila individualmente
+            if 'habitação' in produto or 'habitacao' in produto:
+                return False
+
+            # automóvel perfila se >=10k, sem garantia, sem litígio
+            if 'automóvel' in produto or 'automovel' in produto:
+                if not garantia_ok:
+                    return False
+                return litigio_ok and divida >= 10000
+
+            # demais produtos: sem garantia, sem litígio e valor > 0
+            return garantia_ok and litigio_ok and divida > 0
+
+        df['perfil_individual'] = df.apply(regra_perfil_individual, axis=1)
+
+        # -------- PERFILA (por NIF + MAPA + INSTITUIÇÃO), vectorizado --------
+        # normalização para detectar "habitacao" com ou sem acento
+        produto_norm = (
+            df['prodfinanceiro'].astype(str)
+              .str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('ascii')
+              .str.lower()
+        )
+
+        grp_keys = ['nif', 'map_id', 'instituicao']
+
+        has_garantia_grp = df.groupby(grp_keys, dropna=False)['garantias'] \
+                             .transform(lambda s: (s > 0).any())
+
+        has_habitacao_grp = df.groupby(grp_keys, dropna=False)['prodfinanceiro'] \
+                              .transform(lambda s: (
+                                  s.astype(str)
+                                   .str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('ascii')
+                                   .str.lower()
+                                   .str.contains('habitacao', na=False)
+                                   .any()
+                              ))
+
+        # base: linha válida individualmente e grupo sem garantia e sem habitação
+        df['perfila'] = df['perfil_individual'] & (~has_garantia_grp) & (~has_habitacao_grp)
+
+        # -------- FAST-TRACK: crédito automóvel >= 10k, sem garantia, sem litígio --------
+        def is_nao(x):
+            return isinstance(x, str) and x.replace('\xa0','').strip().lower() in ('não', 'nao')
+
+        mask_auto_ok = (
+            produto_norm.str.contains('creditoautomovel|credito automovel', na=False) &
+            (df['divida'] >= 10000) &
+            (df['garantias'] == 0.0) &
+            (df['litigio'].apply(is_nao))
+        )
+        df.loc[mask_auto_ok, 'perfila'] = True
+
+        # -------- PARI/PERSI UNIFICADO (pari_persi) --------
+        # 1) banco canônico por linha
+        df['bank_canon'] = df['instituicao'].astype(str).apply(lambda s: Senninha.normalize_bank_name(s))
+
+        # 2) soma apenas dívidas > 0 dentro do mesmo NIF + MAPA + BANCO
         df['divida_pos'] = df['divida'].where(df['divida'] > 0.0, 0.0)
         totals = (
             df.groupby(['nif', 'map_id', 'bank_canon'], dropna=False)['divida_pos']
@@ -125,11 +156,11 @@ class Senninha:
               .rename(columns={'divida_pos': 'total_nif_mapa_banco'})
         )
 
-        # 4) junta o total por (NIF, MAPA, BANCO)
+        # 3) junta o total por (NIF, MAPA, BANCO)
         df = df.merge(totals, on=['nif', 'map_id', 'bank_canon'], how='left')
         df['total_nif_mapa_banco'] = df['total_nif_mapa_banco'].fillna(0.0)
 
-        # 5) banco do item atinge o mínimo no contexto daquele MAPA?
+        # 4) banco do item atinge o mínimo no contexto daquele MAPA?
         def banco_atinge_min(row):
             bank_key = row['bank_canon']
             if not bank_key:
@@ -141,11 +172,12 @@ class Senninha:
 
         df['bank_ok'] = df.apply(banco_atinge_min, axis=1)
 
-        # 6) por dívida: pari_persi = perfil_individual & divida>0 & bank_ok
+        # 5) por dívida: pari_persi = perfil_individual & divida>0 & bank_ok
         df['pari_persi'] = (df['perfil_individual'] == True) & (df['divida'] > 0) & (df['bank_ok'] == True)
 
-        # === REMOÇÃO DEFINITIVA DOS AUXILIARES (só ficam total_nif_mapa_banco e pari_persi) ===
-        df = df.drop(columns=[c for c in ['bank_canon', 'map_id', 'divida_pos', 'bank_ok'] if c in df.columns], errors='ignore')
+        # -------- Remoção dos auxiliares (mantém apenas os campos acordados) --------
+        df = df.drop(columns=[c for c in ['bank_canon', 'map_id', 'divida_pos', 'bank_ok'] if c in df.columns],
+                     errors='ignore')
 
         # Limpeza final (mantém tipos)
         df['perfil_individual'] = df['perfil_individual'].fillna(False)
@@ -170,13 +202,12 @@ class Senninha:
             if not nif:
                 continue
 
-            # total elegível (mantendo sua lógica baseada em 'perfila')
+            # total elegível (baseado em 'perfila')
             dividas_elegiveis = grupo[grupo['perfila'] == True]
             total_elegivel = float(dividas_elegiveis['divida'].sum())
             perfila = total_elegivel >= 6000
 
-            # >>> NOVO NO RESUMO: pari_persi agregado por NIF
-            # true se existir pelo menos UMA linha com pari_persi true para este NIF
+            # PARI/PERSI agregado por NIF (existe ao menos uma linha true?)
             pari_persi_resumo = bool(pd.Series(grupo.get('pari_persi', False)).fillna(False).any())
 
             estrutura = {
@@ -186,7 +217,6 @@ class Senninha:
                     "perfila": perfila,
                     "pari_persi": pari_persi_resumo
                 },
-                # as dívidas já vêm só com total_nif_mapa_banco e pari_persi de extra
                 "dividas": grupo.to_dict(orient="records")
             }
 
