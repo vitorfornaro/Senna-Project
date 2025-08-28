@@ -1,45 +1,42 @@
 # Usa imagem base leve com Python 3.11
 FROM python:3.11-slim
 
-# Define variável de ambiente para não gerar arquivos `.pyc`
+# Evita .pyc e garante logs sem buffer
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Instala dependências do sistema
+# Dependências do sistema (OCR + PDF)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         tesseract-ocr \
         tesseract-ocr-por \
         libgl1 \
         poppler-utils \
-        && apt-get clean && \
-        rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Define o diretório de trabalho
+# Diretório de trabalho base
 WORKDIR /app
 
-# Copia os arquivos do projeto para o container
-COPY . .
+# Copia só requirements primeiro (cache melhor)
+COPY requirements.txt ./requirements.txt
 
-# Define o caminho do código-fonte como variável de ambiente
-ENV PYTHONPATH=/app/src
-
-# Instala as dependências do projeto
+# Instala dependências Python (inclua gunicorn no requirements.txt)
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Garante que os diretórios necessários existem
-RUN mkdir -p \
-    ./maps/encrypted/processed \
-    ./maps/decrypted/processed \
-    ./maps/outputs/json \
-    ./maps/outputs/csv \
-    ./maps/no_perfila \
-    ./customers \
-    ./logs
+# Agora copia o resto do projeto
+COPY . .
 
-# Expõe a porta usada pela aplicação Flask
+# ⚠️ IMPORTANTE: habilita imports de 'src' e de 'services' usados como caminho raiz
+# - /app/senna-project     -> permite "from src...."
+# - /app/senna-project/src -> permite "from services...."
+ENV PYTHONPATH=/app/senna-project:/app/senna-project/src
+
+# Roda a partir do diretório do projeto
+WORKDIR /app/senna-project
+
+# Porta da API Flask
 EXPOSE 5001
 
-# Define o comando padrão de inicialização com Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:5001", "app:app"]
+# Sobe com gunicorn apontando para o módulo "src.api.app:app"
+CMD ["gunicorn", "--bind", "0.0.0.0:5001", "src.api.app:app"]
